@@ -1,0 +1,10 @@
+# dsh-vs-game 的 bundle patch —— 把游戏插件挂进 DSH 配置树
+
+- insert:
+    - id: vs-game
+      name: 'dsh-vs-game'
+      config:
+        # 空闲刷怪间隔（秒）：没有真实工作事件时的保底刷怪节奏
+        idleSpawnRate: 3
+        # 失去焦点时自动暂停
+        autoPause: true
