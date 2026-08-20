@@ -19,10 +19,14 @@ DeepSeek Harness (DSH) 的工作驱动解压小游戏插件（吸血鬼幸存者
 ## 安装
 
 ```powershell
+# 从 GitHub 安装（本插件零构建，git 安装即用）
+dsh plugin --profile web-desktop add github:shang-han/dsh-vs-game
+
+# 或本地目录安装
 dsh plugin --profile web-desktop add <本目录>
 ```
 
-重启 DSH 后，界面右下角出现 🧛 按钮，或在会话里输入 `/vs` 切换面板。
+重启 DSH 后，界面右下角出现 🐟 按钮，或在会话里输入 `/vs` 切换面板。
 
 ## 开发
 
