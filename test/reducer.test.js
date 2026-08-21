@@ -9,23 +9,29 @@ import { GameReducer } from '../lib/game-reducer.js';
 const S = {}; // session 对象在 reducer 里基本不参与逻辑
 const ev = (type, data = {}) => ({ type, data });
 
-test('assistant/message 的 usage 换算成 drop-xp', () => {
+test('token 经验回合内只累积，turn 结束统一清场结算', () => {
   const r = new GameReducer();
-  const out = r.handle(S, ev('assistant/message', {
+  // turn 内：只攒不掉
+  assert.deepEqual(r.handle(S, ev('assistant/message', {
     usage: { inputTokens: 2000, outputTokens: 1000, cacheReadTokens: 0 },
-  }));
-  assert.equal(out.length, 1);
-  assert.equal(out[0].kind, 'drop-xp');
-  assert.ok(out[0].gems >= 1 && out[0].gems <= 6);
-  assert.ok(out[0].value > 0);
-  // 总经验 ≈ 3000/100 = 30
-  const totalXp = out[0].gems * out[0].value;
+  })), []);
+  // turn 结束：全屏清怪 + 一次性经验雨（总经验 ≈ 3000/100 = 30）
+  const out = r.handle(S, ev('turn/end', { reason: { kind: 'completed' } }));
+  assert.equal(out[0].kind, 'screen-nuke');
+  const drop = out.find((m) => m.kind === 'drop-xp');
+  assert.ok(drop, 'should settle xp');
+  const totalXp = drop.gems * drop.value;
   assert.ok(totalXp >= 25 && totalXp <= 35, `totalXp=${totalXp}`);
+  // 结算后清零：下一个空 turn 结束不再掉经验
+  r.handle(S, ev('turn/start'));
+  const out2 = r.handle(S, ev('turn/end', { reason: { kind: 'completed' } }));
+  assert.ok(!out2.some((m) => m.kind === 'drop-xp'));
 });
 
-test('assistant/message 无 usage 不产出', () => {
+test('assistant/message 无 usage 不累积', () => {
   const r = new GameReducer();
   assert.deepEqual(r.handle(S, ev('assistant/message', {})), []);
+  assert.equal(r.pendingXp, 0);
 });
 
 test('tool/call 文件工具按扩展名刷怪', () => {
@@ -60,17 +66,19 @@ test('tool/result 报错 → 上次文件类型的精英怪', () => {
   assert.deepEqual(out, [{ kind: 'spawn', enemy: 'py', count: 1, elite: true }]);
 });
 
-test('turn 生命周期：小回合 wave-clear，大回合 boss', () => {
+test('turn 生命周期：小回合清场无 boss，大回合清场 + boss', () => {
   const r = new GameReducer();
   r.handle(S, ev('turn/start'));
   let out = r.handle(S, ev('turn/end', { reason: { kind: 'completed' } }));
-  assert.equal(out[0].kind, 'wave-clear');
+  assert.equal(out[0].kind, 'screen-nuke');
+  assert.ok(!out.some((m) => m.kind === 'boss-spawn'));
 
   r.handle(S, ev('turn/start'));
   r.handle(S, ev('assistant/message', { usage: { inputTokens: 12000, outputTokens: 1000 } }));
   out = r.handle(S, ev('turn/end', { reason: { kind: 'completed' } }));
-  assert.equal(out[0].kind, 'boss-spawn');
-  assert.ok(out[0].hp >= 50);
+  const boss = out.find((m) => m.kind === 'boss-spawn');
+  assert.ok(boss, 'big turn should spawn boss');
+  assert.ok(boss.hp >= 50);
 });
 
 test('turn/end aborted → screen-nuke；blocked → shield', () => {
