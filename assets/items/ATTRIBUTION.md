@@ -4,12 +4,8 @@
 
 - 技能书
   - https://opengameart.org/content/cc0-book-icons
-  - 文件：book_04.png、open_book_01.png
-- 宝石饰品
-  - https://opengameart.org/content/cc0-gem-icons
-  - 文件：ruby.png、emerald.png
-- 药水
-  - https://opengameart.org/content/cc0-potion-icons
-  - 文件：potion_1_red.png、potion_1_blue.png
+  - 文件：book_04.png
+
+新手礼包图标为项目自绘像素图，无第三方许可限制。
 
 CC0 无需署名，此处保留来源信息方便后续维护。
