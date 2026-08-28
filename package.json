@@ -46,5 +46,8 @@
     "game",
     "vampire-survivors"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test test/reducer.test.js test/meta.test.js"
+  }
 }
