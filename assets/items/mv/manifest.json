@@ -1,32 +1,122 @@
 {
- "chest-gold": "assets/items/mv/chest-gold.png",
- "chest-blue": "assets/items/mv/chest-blue.png",
- "acc-ring": "assets/items/mv/acc-ring.png",
- "mat-coinpile": "assets/items/mv/mat-coinpile.png",
- "mat-bundle": "assets/items/mv/mat-bundle.png",
- "tool-pick": "assets/items/mv/tool-pick.png",
- "box-gift": "assets/items/mv/box-gift.png",
- "tent": "assets/items/mv/tent.png",
- "rune-purple": "assets/items/mv/rune-purple.png",
- "rune-blue": "assets/items/mv/rune-blue.png",
- "rune-red": "assets/items/mv/rune-red.png",
- "mat-scroll": "assets/items/mv/mat-scroll.png",
- "mat-ingot-silver": "assets/items/mv/mat-ingot-silver.png",
- "mat-ingot-aqua": "assets/items/mv/mat-ingot-aqua.png",
- "mat-ingot-blue": "assets/items/mv/mat-ingot-blue.png",
- "mat-ingot-purple": "assets/items/mv/mat-ingot-purple.png",
- "mat-ingot-rose": "assets/items/mv/mat-ingot-rose.png",
- "mat-ingot-green": "assets/items/mv/mat-ingot-green.png",
- "acc-medal-red": "assets/items/mv/acc-medal-red.png",
- "acc-medal-blue": "assets/items/mv/acc-medal-blue.png",
- "acc-medal-green": "assets/items/mv/acc-medal-green.png",
- "acc-boots": "assets/items/mv/acc-boots.png",
- "acc-shield": "assets/items/mv/acc-shield.png",
- "acc-grail": "assets/items/mv/acc-grail.png",
- "acc-lute": "assets/items/mv/acc-lute.png",
- "acc-flute": "assets/items/mv/acc-flute.png",
- "acc-horn": "assets/items/mv/acc-horn.png",
- "acc-unicorn-horn": "assets/items/mv/acc-unicorn-horn.png",
- "acc-conch": "assets/items/mv/acc-conch.png",
- "acc-uni-head": "assets/items/mv/acc-uni-head.png"
+ "acc-boots": {
+  "path": "assets/items/mv/acc-boots.png",
+  "size": 34
+ },
+ "acc-medal-red": {
+  "path": "assets/items/mv/acc-medal-red.png",
+  "size": 31
+ },
+ "acc-medal-blue": {
+  "path": "assets/items/mv/acc-medal-blue.png",
+  "size": 31
+ },
+ "acc-medal-green": {
+  "path": "assets/items/mv/acc-medal-green.png",
+  "size": 31
+ },
+ "acc-shield": {
+  "path": "assets/items/mv/acc-shield.png",
+  "size": 30
+ },
+ "acc-grail": {
+  "path": "assets/items/mv/acc-grail.png",
+  "size": 31
+ },
+ "acc-lute": {
+  "path": "assets/items/mv/acc-lute.png",
+  "size": 33
+ },
+ "acc-flute": {
+  "path": "assets/items/mv/acc-flute.png",
+  "size": 32
+ },
+ "acc-horn": {
+  "path": "assets/items/mv/acc-horn.png",
+  "size": 31
+ },
+ "acc-unicorn-horn": {
+  "path": "assets/items/mv/acc-unicorn-horn.png",
+  "size": 31
+ },
+ "acc-conch": {
+  "path": "assets/items/mv/acc-conch.png",
+  "size": 32
+ },
+ "acc-uni-head": {
+  "path": "assets/items/mv/acc-uni-head.png",
+  "size": 35
+ },
+ "mat-ingot-silver": {
+  "path": "assets/items/mv/mat-ingot-silver.png",
+  "size": 30
+ },
+ "mat-ingot-aqua": {
+  "path": "assets/items/mv/mat-ingot-aqua.png",
+  "size": 31
+ },
+ "mat-ingot-blue": {
+  "path": "assets/items/mv/mat-ingot-blue.png",
+  "size": 31
+ },
+ "mat-ingot-purple": {
+  "path": "assets/items/mv/mat-ingot-purple.png",
+  "size": 31
+ },
+ "mat-ingot-rose": {
+  "path": "assets/items/mv/mat-ingot-rose.png",
+  "size": 31
+ },
+ "mat-ingot-green": {
+  "path": "assets/items/mv/mat-ingot-green.png",
+  "size": 31
+ },
+ "acc-ring": {
+  "path": "assets/items/mv/acc-ring.png",
+  "size": 34
+ },
+ "mat-bundle": {
+  "path": "assets/items/mv/mat-bundle.png",
+  "size": 34
+ },
+ "chest-gold": {
+  "path": "assets/items/mv/chest-gold.png",
+  "size": 33
+ },
+ "chest-blue": {
+  "path": "assets/items/mv/chest-blue.png",
+  "size": 33
+ },
+ "tool-pick": {
+  "path": "assets/items/mv/tool-pick.png",
+  "size": 31
+ },
+ "mat-coinpile": {
+  "path": "assets/items/mv/mat-coinpile.png",
+  "size": 31
+ },
+ "box-gift": {
+  "path": "assets/items/mv/box-gift.png",
+  "size": 30
+ },
+ "tent": {
+  "path": "assets/items/mv/tent.png",
+  "size": 32
+ },
+ "mat-scroll": {
+  "path": "assets/items/mv/mat-scroll.png",
+  "size": 32
+ },
+ "rune-purple": {
+  "path": "assets/items/mv/rune-purple.png",
+  "size": 31
+ },
+ "rune-blue": {
+  "path": "assets/items/mv/rune-blue.png",
+  "size": 31
+ },
+ "rune-red": {
+  "path": "assets/items/mv/rune-red.png",
+  "size": 31
+ }
 }
