@@ -52,10 +52,16 @@ test('存档净化：清理演示药水/宝石', () => {
   assert.ok(!g.inventory.some((x) => x.startsWith('potion-') || x.startsWith('gem-')));
 });
 
-test('存档净化：未用技能书 → 保证包内有一本且未学会技能', () => {
+test('存档净化：未用技能书时不强制补发，技能被清空', () => {
   const g = sanitizeGlobal({ ...structuredClone(DEFAULT_GLOBAL), inventory: [], skillBookUsed: false, activeSkill: 'strike' });
-  assert.ok(g.inventory.includes('skill-book'));
+  assert.ok(!g.inventory.includes('skill-book'));
   assert.equal(g.activeSkill, null);
+});
+
+test('第一关翻卡固定包含一张技能书碎片', () => {
+  const cards = rollFlipCards('busy-server');
+  assert.equal(cards.length, 3);
+  assert.ok(cards.some((c) => c.kind === 'fragment' && c.item === 'skill-fragment'));
 });
 
 test('存档净化：已用技能书 → 包内不再有技能书', () => {
