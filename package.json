@@ -17,7 +17,9 @@
   "files": [
     "lib",
     "assets",
-    "cordis.patch.yml"
+    "cordis.patch.yml",
+    "LICENSE",
+    "README.md"
   ],
   "dsh": {
     "bundle": {
@@ -49,5 +51,12 @@
   "license": "MIT",
   "scripts": {
     "test": "node --test test/reducer.test.js test/meta.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shang-han/dsh-vs-game.git"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

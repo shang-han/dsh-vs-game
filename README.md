@@ -28,6 +28,57 @@ dsh plugin --profile web-desktop add github:shang-han/dsh-vs-game
 
 重启 DSH 后，界面右下角出现 🐟 按钮，或在会话里输入 `/vs` 切换面板。
 
+
+## 兼容性 / Compatibility
+
+- Node.js：`>=18`
+- DSH：`>=0.1.0-rc.6`（peerDependencies 中的 DSH 包）
+- 平台：DSH `web` / `web-desktop`，通过 `shell.overlay` 槽位渲染
+
+## 权限 / Permissions
+
+插件运行时会使用以下能力，均在 DSH 宿主进程内：
+
+- 文件（files）
+  - 只读读取插件包内 `assets/`，用于 tileset 与角色精灵图。
+  - 通过 DSH storage domain 读写 `vs_game` 存档；不直接扫描用户文件系统。
+- 网络（network）
+  - 在 DSH 本地 web server 注册 `/vs-game/assets/*` 静态资源路由。
+  - 注册 `/vs-game/ws` WebSocket，用于 host↔client 游戏消息。
+  - 不主动访问外部网络服务。
+
+## 依赖 / Dependencies
+
+运行时依赖由 DSH 宿主提供：
+
+- `@deepseek-ai/cordis`
+- `@deepseek-ai/dsh-home-paths`
+- `@deepseek-ai/dsh-host-webserver`
+- `@deepseek-ai/dsh-client-runtime`
+- `@deepseek-ai/dsh-client-ui-slots`
+- `react`
+- `ws`
+
+失败边界：WebSocket 或游戏渲染异常不会影响 DSH 宿主页面；客户端引擎渲染与逻辑异常会被捕获并降级。
+
+## 安装 / 启动 / 卸载
+
+安装：
+
+```powershell
+dsh plugin --profile web add github:shang-han/dsh-vs-game
+dsh plugin --profile web-desktop add github:shang-han/dsh-vs-game
+```
+
+启动：重启 DSH 后，界面右下角出现 🐟 按钮，点击打开游戏；或在会话输入 `/vs`。
+
+卸载：
+
+```powershell
+dsh plugin --profile web remove dsh-vs-game
+dsh plugin --profile web-desktop remove dsh-vs-game
+```
+
 ## 开发
 
 双半插件结构（同 dsh-pet）：
