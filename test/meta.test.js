@@ -5,7 +5,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  passiveUpgradeCost, rollFlipCards, toCharacter, sanitizeGlobal,
+  passiveUpgradeCost, rollFlipCards, toCharacter, sanitizeGlobal, openBagItem,
   flipCharge, FLIP_EXTRA_COST, FLIP_ACC_POOL, FLIP_MAT_POOL, DEFAULT_GLOBAL,
 } from '../lib/index.js';
 
@@ -70,10 +70,51 @@ test('存档净化：已用技能书 → 包内不再有技能书', () => {
   assert.equal(g.activeSkill, 'strike');
 });
 
-test('存档净化：未开礼包 → 保证有一本新手礼包', () => {
-  const g = sanitizeGlobal({ ...structuredClone(DEFAULT_GLOBAL), inventory: [], giftOpened: false });
-  assert.equal(g.inventory[0], 'newbie-gift');
-  // 已开 → 不重发
-  const g2 = sanitizeGlobal({ ...structuredClone(DEFAULT_GLOBAL), inventory: [], giftOpened: true });
-  assert.ok(!g2.inventory.includes('newbie-gift'));
+test('新存档默认带一个新手礼包，净化不再补发', () => {
+  const fresh = structuredClone(DEFAULT_GLOBAL);
+  assert.equal(fresh.inventory.filter((x) => x === 'newbie-gift').length, 1);
+
+  const emptied = sanitizeGlobal({ ...fresh, inventory: [], giftOpened: false });
+  assert.ok(!emptied.inventory.includes('newbie-gift'));
+});
+
+test('存档净化：礼包放进合成台后不会在背包里补发复制', () => {
+  const g = sanitizeGlobal({
+    ...structuredClone(DEFAULT_GLOBAL),
+    inventory: [],
+    craftingStorage: ['newbie-gift'],
+    giftOpened: false,
+  });
+  assert.ok(!g.inventory.includes('newbie-gift'));
+  assert.deepEqual(g.craftingStorage, ['newbie-gift']);
+});
+
+test('新手礼包：一次只打开一个，每个 +1000 金币', () => {
+  const g = sanitizeGlobal({
+    ...structuredClone(DEFAULT_GLOBAL),
+    inventory: ['newbie-gift', 'newbie-gift', 'newbie-gift'],
+    giftOpened: false,
+  });
+
+  const first = openBagItem(g, 'newbie-gift');
+  assert.equal(first.gold, g.gold + 1000);
+  assert.equal(first.inventory.filter((x) => x === 'newbie-gift').length, 2);
+  assert.equal(first.giftOpened, true);
+
+  const second = openBagItem(first, 'newbie-gift');
+  assert.equal(second.gold, g.gold + 2000);
+  assert.equal(second.inventory.filter((x) => x === 'newbie-gift').length, 1);
+});
+
+test('技能书：叠放时一次只使用一本', () => {
+  const g = sanitizeGlobal({
+    ...structuredClone(DEFAULT_GLOBAL),
+    inventory: ['skill-book', 'skill-book'],
+    skillBookUsed: false,
+  });
+
+  const used = openBagItem(g, 'skill-book');
+  assert.equal(used.activeSkill, 'strike');
+  assert.equal(used.skillBookUsed, true);
+  assert.equal(used.inventory.filter((x) => x === 'skill-book').length, 1);
 });
