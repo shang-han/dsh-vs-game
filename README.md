@@ -1,12 +1,12 @@
 # dsh-vs-game —— 工作中的大肥鱼
 
-DeepSeek Harness (DSH) 的工作驱动解压小游戏插件（吸血鬼幸存者式玩法，主角是 DeepSeek 娘）。
+DeepSeek Harness (DSH) 的工作驱动解压小游戏插件。
 
 > 文件是敌人，token 是经验，Agent 干活就是你变强的方式。
 
 ## 玩法
 
-- 主角：DeepSeek 娘（鲸鱼娘形态），WASD / 方向键移动，武器全自动攻击
+- 主角：大肥鱼，WASD / 方向键移动，武器全自动攻击
 - 敌人：各种文件怪（`.ts` / `.py` / `.json` … 各有各的血量速度），精英和 Boss 会发射报错弹幕
 - 经验：token 宝石 —— DSH 真实消耗的 token
 - 与真实工作联动：
