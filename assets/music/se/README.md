@@ -18,3 +18,8 @@
 - 优先 ogg/mp3
 - 单文件尽量小于 200KB
 - 统一响度，避免音量差异过大
+
+## 音效来源
+
+- Kenney CC0 音效包（Impact Sounds / Interface Sounds / RPG Audio / Digital Audio）
+- AudioGen 生成（部分战斗音效）
