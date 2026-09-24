@@ -105,7 +105,15 @@
           "sheet": "strike.png",
           "frames": 6,
           "fps": 14,
-          "playback": "once"
+          "playback": "once",
+          "durations": [
+            0.06,
+            0.07,
+            0.16,
+            0.12,
+            0.05,
+            0.04
+          ]
         }
       }
     }
