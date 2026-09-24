@@ -114,6 +114,20 @@
             0.06,
             0.04
           ]
+        },
+        "shoot": {
+          "sheet": "shoot.png",
+          "frames": 6,
+          "fps": 12,
+          "playback": "once",
+          "durations": [
+            0.06,
+            0.06,
+            0.1,
+            0.08,
+            0.05,
+            0.05
+          ]
         }
       }
     }
