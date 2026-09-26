@@ -78,7 +78,7 @@ test('turn 生命周期：小回合清场无 boss，大回合清场 + boss', () 
   out = r.handle(S, ev('turn/end', { reason: { kind: 'completed' } }));
   const boss = out.find((m) => m.kind === 'boss-spawn');
   assert.ok(boss, 'big turn should spawn boss');
-  assert.ok(boss.hp >= 50);
+  assert.ok(boss.hp >= 500);
 });
 
 test('turn/end aborted → screen-nuke；blocked → shield', () => {
