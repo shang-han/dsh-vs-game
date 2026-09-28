@@ -66,5 +66,9 @@
   "rune-red": {
     "path": "assets/items/mv/rune-red.png",
     "size": 31
+  },
+  "acc-knife-diamond": {
+    "path": "assets/items/mv/acc-knife-diamond.png",
+    "size": 21
   }
 }
