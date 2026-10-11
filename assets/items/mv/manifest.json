@@ -70,5 +70,9 @@
   "acc-knife-diamond": {
     "path": "assets/items/mv/acc-knife-diamond.png",
     "size": 21
+  },
+  "acc-fish-ring": {
+    "path": "assets/items/mv/acc-fish-ring.png",
+    "size": 32
   }
 }
