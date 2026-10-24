@@ -52,10 +52,21 @@ test('存档净化：清理演示药水/宝石', () => {
   assert.ok(!g.inventory.some((x) => x.startsWith('potion-') || x.startsWith('gem-')));
 });
 
-test('存档净化：未用技能书时不强制补发，技能被清空', () => {
+test('存档净化：老档只有 activeSkill 时并入已解锁列表，且不补发技能书', () => {
   const g = sanitizeGlobal({ ...structuredClone(DEFAULT_GLOBAL), inventory: [], skillBookUsed: false, activeSkill: 'strike' });
-  assert.ok(!g.inventory.includes('skill-book'));
-  assert.equal(g.activeSkill, null);
+  assert.ok(!g.inventory.includes('skill-book'));   // 技能书只从碎片合成，净化不再补发
+  assert.equal(g.activeSkill, 'strike');            // 已选技能保留
+  assert.deepEqual(g.unlockedSkills, ['strike']);   // 迁移进永久已解锁列表
+});
+
+test('存档净化：非法技能名清空，缺 activeSkill 时从已解锁列表回填', () => {
+  const bad = sanitizeGlobal({ ...structuredClone(DEFAULT_GLOBAL), activeSkill: 'not-a-skill' });
+  assert.equal(bad.activeSkill, null);
+  assert.deepEqual(bad.unlockedSkills, []);
+
+  const backfill = sanitizeGlobal({ ...structuredClone(DEFAULT_GLOBAL), activeSkill: null, unlockedSkills: ['railgun'] });
+  assert.equal(backfill.activeSkill, 'railgun');
+  assert.deepEqual(backfill.unlockedSkills, ['railgun']);
 });
 
 test('第一关翻卡固定包含一张技能书碎片', () => {
@@ -64,10 +75,11 @@ test('第一关翻卡固定包含一张技能书碎片', () => {
   assert.ok(cards.some((c) => c.kind === 'fragment' && c.item === 'skill-fragment'));
 });
 
-test('存档净化：已用技能书 → 包内不再有技能书', () => {
+test('存档净化：已用技能书 → 技能保留，背包里的技能书不会被吞', () => {
   const g = sanitizeGlobal({ ...structuredClone(DEFAULT_GLOBAL), inventory: ['skill-book'], skillBookUsed: true, activeSkill: 'strike' });
-  assert.ok(!g.inventory.includes('skill-book'));
+  assert.ok(g.inventory.includes('skill-book'));   // 新模型下技能书是可合成的普通道具，净化不该删
   assert.equal(g.activeSkill, 'strike');
+  assert.deepEqual(g.unlockedSkills, ['strike']);
 });
 
 test('新存档默认带一个新手礼包，净化不再补发', () => {
