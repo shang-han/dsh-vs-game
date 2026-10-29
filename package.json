@@ -1,6 +1,6 @@
 {
   "name": "dsh-vs-game",
-  "version": "0.10.4",
+  "version": "0.10.5",
   "description": "工作中的大肥鱼：工作驱动的解压小游戏。文件是敌人，token 是经验，DSH 干活就是你变强的方式。",
   "type": "module",
   "main": "lib/index.js",
@@ -60,6 +60,9 @@
     "node": ">=18"
   },
   "dependencies": {
-    "ws": ">=8.18.0"
+    "@deepseek-ai/dsh-storage-domain": "0.2.1-rc.3",
+    "@deepseek-ai/schemastery": "^3.18.5",
+    "ws": ">=8.18.0",
+    "zod": "4.4.3"
   }
 }

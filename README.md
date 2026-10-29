@@ -49,7 +49,7 @@ dsh plugin --profile web-desktop add github:shang-han/dsh-vs-game
 
 ## 依赖 / Dependencies
 
-运行时依赖由 DSH 宿主提供：
+宿主（peerDependencies，由 DSH 进程提供）：
 
 - `@deepseek-ai/cordis`
 - `@deepseek-ai/dsh-home-paths`
@@ -57,7 +57,16 @@ dsh plugin --profile web-desktop add github:shang-han/dsh-vs-game
 - `@deepseek-ai/dsh-client-runtime`
 - `@deepseek-ai/dsh-client-ui-slots`
 - `react`
+
+插件自己的运行时依赖（写在 `dependencies`，装插件时由 pnpm 自动安装）：
+
+- `@deepseek-ai/dsh-storage-domain`（版本需与 DSH 对齐，当前 `0.2.1-rc.3`）
+- `@deepseek-ai/schemastery`
+- `zod`
 - `ws`
+
+> ⚠️ 如果你是**手动下载 ZIP 解压**后直接把目录指给 DSH，必须先在该目录执行一次 `pnpm install`（或改用插件管理器安装）。
+> 否则 `lib/index.js` 里的 `@deepseek-ai/schemastery` / `@deepseek-ai/dsh-storage-domain` 会找不到，表现为「启用失败：Cannot find package '@deepseek-ai/schemastery'」或存档读不出来。
 
 失败边界：WebSocket 或游戏渲染异常不会影响 DSH 宿主页面；客户端引擎渲染与逻辑异常会被捕获并降级。
 
