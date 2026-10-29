@@ -32,7 +32,7 @@ dsh plugin --profile web-desktop add github:shang-han/dsh-vs-game
 ## 兼容性 / Compatibility
 
 - Node.js：`>=18`
-- DSH：`>=0.1.0-rc.6`（peerDependencies 中的 DSH 包）
+- DSH：`>=0.2.1-rc.1`（已实测 `0.2.1-rc.3`；插件自动安装的 `@deepseek-ai/dsh-storage-domain` 用 `>=0.2.1-rc.1`，与 DSH 版本保持同一条线即可）
 - 平台：DSH `web` / `web-desktop`，通过 `shell.overlay` 槽位渲染
 
 ## 权限 / Permissions
