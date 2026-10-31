@@ -35,6 +35,11 @@ dsh plugin --profile web-desktop add github:shang-han/dsh-vs-game
 - DSH：`>=0.2.1-rc.1`（已实测 `0.2.1-rc.3`；插件自动安装的 `@deepseek-ai/dsh-storage-domain` 用 `>=0.2.1-rc.1`，与 DSH 版本保持同一条线即可）
 - 平台：DSH `web` / `web-desktop`，通过 `shell.overlay` 槽位渲染
 
+## 素材 / Credits
+
+- 鲸鱼娘角色素材：画师 ZipZipPipe（非官方作品，版权归原作者）。
+- 主角动态头像（`assets/whale-girl-avatar/`，13 个半身动作）与龙娘头像（`assets/npc/codex-girl*.png`）：整理自 [dsh-TUI](https://github.com/ccch1mneyyy/dsh-TUI)，Codex 娘由 dsh-TUI 作者绘制；角色形象不在 MIT 授权范围内，二次分发/商用请自行确认授权。
+- 其余游戏美术、图标、音效见 `assets/` 目录内说明。
 ## 权限 / Permissions
 
 插件运行时会使用以下能力，均在 DSH 宿主进程内：
