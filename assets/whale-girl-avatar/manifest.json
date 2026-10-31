@@ -166,7 +166,8 @@
         0.08,
         0.07,
         0.5
-      ]
+      ],
+      "playback": "once"
     },
     "error": {
       "sheet": "error.png",
@@ -182,7 +183,8 @@
         0.16,
         0.2,
         0.3
-      ]
+      ],
+      "playback": "once"
     },
     "hearts": {
       "sheet": "smile-hearts.png",
@@ -237,7 +239,8 @@
         0.11,
         0.11,
         0.11
-      ]
+      ],
+      "playback": "once"
     }
   },
   "default": "idle"
