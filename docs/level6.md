@@ -39,11 +39,11 @@
 
 | 想要的效果 | 改哪里 |
 | --- | --- |
-| 弹幕密度 | `dragonGate.bulletWaves` / 背景流间隔（`updateDragonBoss` 里 `0.24`） |
+| 弹幕密度 | `dragonGate.bulletWaves`、`waveEveryBeats`、`streamEvery`、`bulletCap` |
 | 音乐节拍 | `dragonGate.bpm`（实测 126）；换歌时改 `bgm` |
-| 打得太慢/太快 | `hurtEnemy` 里 `roll.dmg *= 3 / 6`；或 `boss.phaseHp` |
+| 打得太慢/太快 | `dragonGate.damageMul`（默认 `[3,6,0]`）；或 `boss.phaseHp` |
 | 轮盘池 | `dragonGate.reelWeapons` / `reelSkills` |
-| 白饭频率 | `updateDragonBoss` 里 `dragonRiceT >= 8.5` |
+| 白饭频率 | `dragonGate.riceEvery`（默认 8.5s） |
 | 处决时间 | `dragonGate.executeAfter`（默认 6.5s） |
 | 龙娘大小/位置 | `updateDragonView` 里 `290 * cssScale` 与 `sy - s*0.86` |
 
