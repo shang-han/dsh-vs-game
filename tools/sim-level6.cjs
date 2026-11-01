@@ -196,6 +196,8 @@ e.player.maxHp = 99999; e.player.hp = 99999;
 // 一阶段：打空第一段
 for (let i = 0; i < 40 && boss.phase === 0; i++) e.hurtEnemy(boss, 20000);
 check('第一段打完：过场对话', e.phase === 'bossintro' && e.bossIntro?.kind === 'dragon-phase-1', e.bossIntro?.kind ?? e.phase);
+e.activeSkillId = 'purge'; e.unlockedSkills = ['purge'];
+e.laserSkillOn = true; e.purge = { phase: 'hunt', t: 0 }; e.skillTimer = 3; e.teleportsLeft = 3;   // 模拟开打前挂着的技能
 for (let i = 0; i < 50 && e.phase === 'bossintro'; i++) e.advanceBossIntro();
 check('第二段开始：重置 10 万 + 封锁', boss.phase === 1 && boss.hp === 100000 && e.dragonLock?.weapon === true && e.dragonLock?.skill === true,
   'phase=' + boss.phase + ' hp=' + boss.hp);
@@ -205,7 +207,9 @@ check('第二段开始：重置 10 万 + 封锁', boss.phase === 1 && boss.hp ==
   for (let i = 0; i < 60 * 2; i++) e.tick(1 / 60);
   check('二阶段：守在门口放弹幕（不靠近）', homeDist < 8 && e.enemyBullets.length > 0, 'homeDist=' + Math.round(homeDist) + ' bullets=' + e.enemyBullets.length);
 }
-check('二阶段：轮盘存在', !!e.dragonReel && e.dragonReel.items.length >= 4, e.dragonReel ? e.dragonReel.items.length : 0);
+check('二阶段：轮盘先不显示（等吃白饭）', e.dragonReel == null, String(e.dragonReel));
+check('二阶段：已挂着的技能被掐掉', e.laserSkillOn === false && !e.purge && (e.skillTimer ?? 0) === 0 && (e.teleportsLeft ?? 0) === 0,
+  'laser=' + e.laserSkillOn + ' purge=' + !!e.purge + ' timer=' + e.skillTimer + ' tp=' + e.teleportsLeft);
 check('二阶段：BGM 已开始', !!e.dragonBgm && e.dragonBgm.paused === false, e.dragonBgm ? e.dragonBgm.src : 'none');
 check('二阶段：自动武器被封锁', e.autoWeaponsEnabled() === false, String(e.autoWeaponsEnabled()));
 const skillBefore = e.skillTimer ?? 0;
@@ -216,7 +220,7 @@ check('二阶段：技能被封锁（放不出来）', (e.skillTimer ?? 0) === s
 e.player.maxHp = 99999; e.player.hp = 99999; e.player.invuln = 999;
 for (let i = 0; i < 360; i++) e.tick(1 / 60);
 const snap2 = e.snapshot();
-check('快照：Boss 三段/第二段/轮盘/锁定', snap2.boss && snap2.boss.dragon === true && snap2.boss.phaseCount === 3 && snap2.boss.phase === 2 && !!snap2.boss.reel && snap2.boss.lock?.weapon === true,
+check('快照：Boss 三段/第二段/轮盘未显示/锁定', snap2.boss && snap2.boss.dragon === true && snap2.boss.phaseCount === 3 && snap2.boss.phase === 2 && snap2.boss.reel == null && snap2.boss.lock?.weapon === true,
   JSON.stringify({ phase: snap2.boss?.phase, count: snap2.boss?.phaseCount, reel: !!snap2.boss?.reel, lock: snap2.boss?.lock }));
 check('快照：HUD 锁定标记', snap2.activeSkill?.locked === true && snap2.weaponLocked === true,
   'skillLocked=' + snap2.activeSkill?.locked + ' weaponLocked=' + snap2.weaponLocked);
@@ -229,9 +233,10 @@ if (!e.dragonRice.length) e.dragonSpawnRice();
 {
   const r = e.dragonRice[e.dragonRice.length - 1];
   e.player.x = r.x; e.player.y = r.y;
-  e.player.maxHp = 99999; e.player.hp = 99999; e.player.invuln = 999;   // 仿真里别被弹幕打断轮盘
+  e.player.maxHp = 99999; e.player.hp = 1; e.player.invuln = 999;   // 血打低，验证白饭回满
   e.tick(1 / 60);
-  check('白饭：吃到后轮盘开始减速', !!e.dragonReel && e.dragonReel.spinT > 0, 'spinT=' + e.dragonReel?.spinT);
+  check('白饭：回满体力', e.player.hp === e.player.maxHp, 'hp=' + e.player.hp);
+  check('白饭：吃完轮盘才出现并开始转', !!e.dragonReel && e.dragonReel.spinT > 0, 'spinT=' + e.dragonReel?.spinT);
   for (let i = 0; i < 120 && e.dragonReel?.spinning; i++) e.tick(1 / 60);
   // 暂停/继续：BGM 跟着停
   const bgmBefore = !!(e.dragonBgm && !e.dragonBgm.paused);
@@ -264,13 +269,13 @@ if (e.dragonRice.length) {
 }
 
 // 第三碗白饭：两样都解锁后回血，不再转轮盘
-e.player.hp = Math.round(e.player.maxHp * 0.5);
+e.player.hp = Math.round(e.player.maxHp * 0.3);
 e.dragonSpawnRice();
 if (e.dragonRice.length) {
   const r3 = e.dragonRice[e.dragonRice.length - 1];
   e.player.x = r3.x; e.player.y = r3.y;
   e.tick(1 / 60);
-  check('第三碗白饭：回血且不转轮盘', e.player.hp > e.player.maxHp * 0.6 && e.dragonReel?.spinning !== true,
+  check('第三碗白饭：回满体力且不转轮盘', e.player.hp === e.player.maxHp && e.dragonReel?.spinning !== true,
     'hp=' + Math.round(e.player.hp) + '/' + e.player.maxHp + ' spinning=' + e.dragonReel?.spinning);
   e.player.x = 60; e.player.y = 60;
 } else check('第三碗白饭：能刷出', false);
