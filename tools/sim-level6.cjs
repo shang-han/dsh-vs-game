@@ -477,6 +477,24 @@ check('长廊：第 6 关不再出现在上门', !e2.corridor.doors.some((d) => 
   const gotUnfiltered = eL.labPull(iron, 0);
   check('实验室：铁箱出口按过滤出货且优先过滤口', gotFiltered === 'gear' && gotUnfiltered === 'ore-iron', 'filtered=' + gotFiltered + ' unfiltered=' + gotUnfiltered);
 
+  // 分流器：背后进、另外三口出；物品不能凭空消失
+  const sp = { id: 'sp', kind: 'splitter', x: 2, y: 2, dir: 1, item: null, prog: 0, sides: [1, 2, 1, 1], inSide: null };
+  const outKeys = eL.labOutTargets(sp).map((p) => p.x + ',' + p.y).sort();
+  check('实验室：分流器入口在背后、三向输出', eL.labPush(sp, 'ore-iron', 3) === true && eL.labPush(sp, 'gear', 0) === false && outKeys.join('|') === '2,1|2,3|3,2', 'outs=' + outKeys.join('|'));
+  {
+    const src = { id: 'sb', kind: 'belt', x: 1, y: 2, dir: 1, item: 'ore-iron', prog: 0.99, inSide: 3, sides: [1, 2, 1, 1] };
+    const sp2 = { id: 'sp2', kind: 'splitter', x: 2, y: 2, dir: 1, item: null, prog: 0, sides: [1, 2, 1, 1], inSide: null };
+    const bUp = { id: 'bu', kind: 'belt', x: 2, y: 1, dir: 0, item: null, prog: 0, inSide: 2, sides: [1, 2, 1, 1] };
+    const bRt = { id: 'br', kind: 'belt', x: 3, y: 2, dir: 1, item: null, prog: 0, inSide: 3, sides: [1, 2, 1, 1] };
+    const bDn = { id: 'bd', kind: 'belt', x: 2, y: 3, dir: 2, item: null, prog: 0, inSide: 0, sides: [1, 2, 1, 1] };
+    eL.lab = { stage: 1, grid: [src, sp2, bUp, bRt, bDn], power: { stored: 100, cap: 100, brownout: false }, store: {}, mineLv: 3 };
+    eL.labBeltStep(src, 1);
+    for (let i = 0; i < 4 && !(bUp.item || bRt.item || bDn.item); i++) eL.labBeltStep(sp2, 1);
+    const items = [sp2.item, bUp.item, bRt.item, bDn.item].filter(Boolean);
+    check('实验室：分流器分出的物品落在带上且不消失', items.length === 1 && items[0] === 'ore-iron', 'items=' + JSON.stringify(items));
+  }
+  eL.lab = { stage: 1, grid: [], power: { stored: 0, cap: 100, brownout: true }, store: {}, mineLv: 3 };
+  check('实验室：矿场/采矿机等级统一读 lab.mineLv', eL.labMineLevel() === 3, 'lv=' + eL.labMineLevel());
   eL.homeDevices = [{ kind: 'basic-mine', built: true, mineLevel: 3 }];
   const miner = { id: 'm', kind: 'miner', x: 5, y: 2, slots: [], prog: 0, sides: [1, 2, 1, 1] };
   for (let i = 0; i < 20; i++) eL.labGatherStep(miner, 0.5, true);
