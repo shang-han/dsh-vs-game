@@ -452,6 +452,42 @@ const gateDoor2 = e2.corridor.doors.find((d) => d.levelId === 'truth-gate');
 check('长廊：通关第 5 关后解锁', gateDoor2 && gateDoor2.locked === false, String(gateDoor2?.locked));
 check('长廊：第 6 关不再出现在上门', !e2.corridor.doors.some((d) => d.kind === 'level' && d.side === 'upper' && d.levelId === 'truth-gate'));
 
+// ── 实验室：电容上限 / 配方过滤 / 采集机 / 铁箱出口过滤 ─────
+{
+  const eL = makeEngine();
+  eL.lab = {
+    stage: 1,
+    grid: [
+      { id: 'cap', kind: 'capacitor', x: 0, y: 0, sides: [1, 2, 1, 1] },
+      { id: 'crank', kind: 'crank', x: 1, y: 0, sides: [1, 2, 1, 1] },
+    ],
+    power: { stored: 0, cap: 100, brownout: true },
+    store: {},
+  };
+  eL.labPowerStep(1 / 60);
+  check('实验室：加电容后电网上限 200', eL.lab.power.cap === 200, 'cap=' + eL.lab.power.cap);
+
+  const smelter = { id: 's', kind: 'smelter', x: 2, y: 2, in: [], out: [], sides: [1, 2, 1, 1], prog: 0 };
+  check('实验室：熔炉拒收配方外物品（不吞带子上的货）', eL.labPush(smelter, 'gear', 0) === false && eL.labPush(smelter, 'ore-iron', 0) === true, 'in=' + JSON.stringify(smelter.in));
+  const refinery = { id: 'r', kind: 'refinery', x: 3, y: 2, in: [], out: [], sides: [1, 2, 1, 1], prog: 0 };
+  check('实验室：精炼炉不再收木材', eL.labPush(refinery, 'mat-wood', 0) === false && eL.labPush(refinery, 'ore-amethyst', 0) === true, 'in=' + JSON.stringify(refinery.in));
+
+  const iron = { id: 'i', kind: 'crate-iron', x: 4, y: 2, slots: [{ item: 'ore-iron', n: 1 }, { item: 'gear', n: 1 }], outFilters: [[], ['gear'], [], []], sides: [1, 2, 1, 1] };
+  const gotFiltered = eL.labPull(iron, 1);
+  const gotUnfiltered = eL.labPull(iron, 0);
+  check('实验室：铁箱出口按过滤出货且优先过滤口', gotFiltered === 'gear' && gotUnfiltered === 'ore-iron', 'filtered=' + gotFiltered + ' unfiltered=' + gotUnfiltered);
+
+  eL.homeDevices = [{ kind: 'basic-mine', built: true, mineLevel: 3 }];
+  const miner = { id: 'm', kind: 'miner', x: 5, y: 2, slots: [], prog: 0, sides: [1, 2, 1, 1] };
+  for (let i = 0; i < 20; i++) eL.labGatherStep(miner, 0.5, true);
+  const mined = (miner.slots ?? []).filter(Boolean).reduce((s, x) => s + x.n, 0);
+  check('实验室：采矿机产矿进自己的格子（矿场 Lv3）', mined > 0 && (miner.slots ?? []).every((x) => !x || ['ore-iron', 'ore-diamond', 'ore-amethyst'].includes(x.item)), 'mined=' + mined + ' slots=' + JSON.stringify(miner.slots));
+  const lumber = { id: 'l', kind: 'lumber', x: 6, y: 2, slots: [], prog: 0, sides: [1, 2, 1, 1] };
+  for (let i = 0; i < 20; i++) eL.labGatherStep(lumber, 0.5, true);
+  const woods = (lumber.slots ?? []).filter(Boolean).reduce((s, x) => s + x.n, 0);
+  check('实验室：伐木机产木材进自己的格子', woods > 0 && (lumber.slots ?? []).every((x) => !x || x.item === 'mat-wood'), 'wood=' + woods);
+}
+
 console.warn = __warn;
 const failed = results.filter((r) => !r.ok);
 console.log('\n' + (results.length - failed.length) + '/' + results.length + ' checks passed');
