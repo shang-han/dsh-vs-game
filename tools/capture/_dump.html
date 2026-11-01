@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>DONE</title>
+<style>html,body{margin:0;background:transparent}</style>
+</head>
+<body>
+<script>
+window.__err = '';
+window.addEventListener('error', (e) => { window.__err = 'ERR ' + (e.message || e.error); document.title = window.__err; document.body.setAttribute('data-err', window.__err); });
+window.addEventListener('unhandledrejection', (e) => { window.__err = 'REJ ' + ((e.reason && e.reason.message) || e.reason); document.title = window.__err; document.body.setAttribute('data-err', window.__err); });
+</script>
+<script type="module">
+import { createDragonBody } from '/assets/dragon/figure.js';
+
+const BASE = location.origin + '/assets/dragon/';
+const BASE_REL = '/assets/dragon/';
+document.title = 'loading model';
+const model = await (await fetch(BASE_REL + 'model.json')).json();
+const legs = (model.leg_rig?.legs ?? []).map((L) => [L.pivot[0], L.pivot[1], L.pivot[0], L.pivot[1]]);
+let fig = null;
+const host = { bounds: () => ({ S: 1 }) };
+const kit = {
+  KIT_EXPRESSIONS: [], KIT_MOTIONS: [],
+  createBody: (_h, { figure }) => {
+    fig = figure;
+    return { layout: () => ({ mode: 'idle', pressing: false, hit: [] }), pointer: () => ({ hit: [] }), do: () => false };
+  },
+};
+document.title = 'loading figure';
+await createDragonBody(BASE, { host, kit });
+document.title = 'figure ok';
+
+const W = 360, H = 400;
+const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+svg.setAttribute('viewBox', '30 15 250 280');
+svg.setAttribute('width', String(W));
+svg.setAttribute('height', String(H));
+const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+svg.append(g);
+document.body.append(svg);
+
+const fx = document.createElement('canvas').getContext('2d');
+fx.canvas.width = 1254; fx.canvas.height = 1254;
+
+const state = {
+  t: 0, mode: 'idle', modeT: 0, facing: 1, look: [0, 0],
+  face: 'neutral', gesture: null, sit: 0, legs, blink: 0, drowse: 0,
+};
+
+async function snap(name, face, t, mode = 'idle', sit = 0, blink = 0) {
+  state.t = t;
+  state.face = face;
+  state.mode = mode;
+  state.modeT = 0;
+  state.sit = sit;
+  state.gesture = null;
+  state.look = [0, 0];
+  state.blink = blink;
+  state.legs = legs;
+  fig.draw(g, fx, state);
+  const xml = new XMLSerializer().serializeToString(svg);
+  const blob = new Blob([xml], { type: 'image/svg+xml;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const img = new Image();
+  await new Promise((ok, bad) => { img.onload = ok; img.onerror = bad; img.src = url; });
+  const cv = document.createElement('canvas');
+  cv.width = W; cv.height = H;
+  const c = cv.getContext('2d');
+  c.clearRect(0, 0, W, H);
+  c.drawImage(img, 0, 0, W, H);
+  URL.revokeObjectURL(url);
+  const data = cv.toDataURL('image/png');
+  await fetch('/save?name=' + encodeURIComponent(name), { method: 'POST', body: data });
+  document.title = 'saved ' + name;
+}
+
+const jobs = [
+  ['idle-open', 'neutral', 0, 'idle', 0, 0],
+  ['idle-blink', 'neutral', 0, 'idle', 0, 1],
+  ['determined-open', 'determined', 0, 'idle', 0, 0],
+  ['determined-blink', 'determined', 0, 'idle', 0, 1],
+  ['angry-open', 'angry', 0, 'idle', 0, 0],
+  ['angry-blink', 'angry', 0, 'idle', 0, 1],
+  ['sit-open', 'sad', 0, 'sit', 1, 0],
+  ['sit-blink', 'sad', 0, 'sit', 1, 1],
+];
+for (const [name, face, times, mode, sit] of jobs) {
+  for (let i = 0; i < times.length; i++) await snap(name + '-' + i, face, times[i], mode, sit);
+}
+document.title = 'DONE';
+</script>
+
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="30 15 250 280" width="360" height="400"><g></g></svg></body></html>

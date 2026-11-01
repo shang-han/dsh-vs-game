@@ -391,16 +391,17 @@ check('闭环结束：回到家里（不播小狼）', (e.phase === 'home' || e.
 
 // ── 龙娘帧素材：预渲染帧齐全 / 绘制不抛错 / Boss 头像存在 ──
 const FRAME_DIR = require('path').join(__dirname, '..', 'assets', 'dragon', 'frames');
-const frameSpec = { idle: 24, determined: 18, angry: 18, sit: 12, hurt: 6 };
-let frameOk = true, frameTotal = 0;
-for (const [state, n] of Object.entries(frameSpec)) {
-  for (let i = 0; i < n; i++) {
-    const f = require('path').join(FRAME_DIR, state + '-' + i + '.png');
-    if (!fs.existsSync(f) || fs.statSync(f).size < 1000) { frameOk = false; console.log('  missing frame', state + '-' + i); }
-    frameTotal++;
-  }
+const frameNames = [];
+for (const state of ['idle', 'determined', 'angry', 'sit']) {
+  frameNames.push(state + '-open', state + '-blink');
 }
-check('龙娘帧：' + frameTotal + ' 张预渲染帧齐全', frameOk, 'checked=' + frameTotal);
+let frameOk = true, frameTotal = 0;
+for (const name of frameNames) {
+  const f = require('path').join(FRAME_DIR, name + '.png');
+  if (!fs.existsSync(f) || fs.statSync(f).size < 1000) { frameOk = false; console.log('  missing frame', name); }
+  frameTotal++;
+}
+check('龙娘帧：' + frameTotal + ' 张关键帧齐全（睁眼/眨眼 × 3 表情 + 坐姿）', frameOk, 'checked=' + frameTotal);
 try {
   for (const phase of [0, 1, 2]) {
     e.drawDragonFrames(fakeCtx(), { x: 450, y: 168, phase, pose: null, hitFlash: 0 });

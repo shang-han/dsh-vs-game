@@ -48,16 +48,15 @@ const state = {
   face: 'neutral', gesture: null, sit: 0, legs, blink: 0, drowse: 0,
 };
 
-async function snap(name, face, t, mode = 'idle', sit = 0) {
+async function snap(name, face, t, mode = 'idle', sit = 0, blink = 0) {
   state.t = t;
   state.face = face;
   state.mode = mode;
   state.modeT = 0;
   state.sit = sit;
   state.gesture = null;
-  // 让帧序列本身带上轻微张望和眨眼，避免每帧几乎一样
-  state.look = [Math.sin(t * 2.1) * 0.45, Math.cos(t * 1.7) * 0.22];
-  state.blink = Math.sin(t * 5.2) > 0.965 ? 1 : 0;
+  state.look = [0, 0];
+  state.blink = blink;
   state.legs = legs;
   fig.draw(g, fx, state);
   const xml = new XMLSerializer().serializeToString(svg);
@@ -77,15 +76,16 @@ async function snap(name, face, t, mode = 'idle', sit = 0) {
 }
 
 const jobs = [
-  ['idle', 'neutral', [0,0.083,0.167,0.25,0.333,0.417,0.5,0.583,0.667,0.75,0.833,0.917,1,1.083,1.167,1.25,1.333,1.417,1.5,1.583,1.667,1.75,1.833,1.917], 'idle', 0],
-  ['determined', 'determined', [0,0.083,0.167,0.25,0.333,0.417,0.5,0.583,0.667,0.75,0.833,0.917,1,1.083,1.167,1.25,1.333,1.417], 'idle', 0],
-  ['angry', 'angry', [0,0.083,0.167,0.25,0.333,0.417,0.5,0.583,0.667,0.75,0.833,0.917,1,1.083,1.167,1.25,1.333,1.417], 'idle', 0],
-  ['sit', 'sad', [0,0.083,0.167,0.25,0.333,0.417,0.5,0.583,0.667,0.75,0.833,0.917], 'sit', 1],
-  ['hurt', 'flustered', [0,0.083,0.167,0.25,0.333,0.417], 'idle', 0],
+  ['idle-open', 'neutral', 0, 'idle', 0, 0],
+  ['idle-blink', 'neutral', 0, 'idle', 0, 1],
+  ['determined-open', 'determined', 0, 'idle', 0, 0],
+  ['determined-blink', 'determined', 0, 'idle', 0, 1],
+  ['angry-open', 'angry', 0, 'idle', 0, 0],
+  ['angry-blink', 'angry', 0, 'idle', 0, 1],
+  ['sit-open', 'sad', 0, 'sit', 1, 0],
+  ['sit-blink', 'sad', 0, 'sit', 1, 1],
 ];
-for (const [name, face, times, mode, sit] of jobs) {
-  for (let i = 0; i < times.length; i++) await snap(name + '-' + i, face, times[i], mode, sit);
-}
+for (const [name, face, t, mode, sit, blink] of jobs) await snap(name, face, t, mode, sit, blink);
 document.title = 'DONE';
 </script>
 </body>
