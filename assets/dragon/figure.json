@@ -1,0 +1,530 @@
+{
+  "manifest": 2,
+  "api": 2,
+  "id": "gpt-dragon-v005-r25",
+  "version": "1.0.2",
+  "name": {
+    "zh": "GPT 龙娘"
+  },
+  "about": {
+    "zh": "银白浅紫龙娘，独立眉毛、呆毛与翅膀动态，支持互动、坐姿与眩晕表情。"
+  },
+  "author": "Asryto",
+  "entry": "figure.js",
+  "export": "createDragonBody",
+  "model": "model.json",
+  "vocab": [
+    {
+      "id": "neutral",
+      "kind": "expression",
+      "names": {
+        "zh": [
+          "平静"
+        ]
+      },
+      "seconds": 0.9,
+      "about": {
+        "zh": "v005 原画表情"
+      }
+    },
+    {
+      "id": "happy",
+      "kind": "expression",
+      "names": {
+        "zh": [
+          "开心"
+        ]
+      },
+      "seconds": 0.9,
+      "about": {
+        "zh": "v005 原画表情"
+      }
+    },
+    {
+      "id": "wink",
+      "kind": "expression",
+      "names": {
+        "zh": [
+          "眨眼"
+        ]
+      },
+      "seconds": 0.9,
+      "about": {
+        "zh": "v005 原画表情"
+      }
+    },
+    {
+      "id": "love",
+      "kind": "expression",
+      "names": {
+        "zh": [
+          "喜欢"
+        ]
+      },
+      "seconds": 0.9,
+      "about": {
+        "zh": "v005 原画表情"
+      }
+    },
+    {
+      "id": "shy",
+      "kind": "expression",
+      "names": {
+        "zh": [
+          "害羞"
+        ]
+      },
+      "seconds": 0.9,
+      "about": {
+        "zh": "v005 原画表情"
+      }
+    },
+    {
+      "id": "surprised",
+      "kind": "expression",
+      "names": {
+        "zh": [
+          "惊讶"
+        ]
+      },
+      "seconds": 0.9,
+      "about": {
+        "zh": "v005 原画表情"
+      }
+    },
+    {
+      "id": "angry",
+      "kind": "expression",
+      "names": {
+        "zh": [
+          "生气"
+        ]
+      },
+      "seconds": 0.9,
+      "about": {
+        "zh": "v005 原画表情"
+      }
+    },
+    {
+      "id": "sad",
+      "kind": "expression",
+      "names": {
+        "zh": [
+          "难过"
+        ]
+      },
+      "seconds": 0.9,
+      "about": {
+        "zh": "v005 原画表情"
+      }
+    },
+    {
+      "id": "sleepy",
+      "kind": "expression",
+      "names": {
+        "zh": [
+          "犯困"
+        ]
+      },
+      "seconds": 0.9,
+      "about": {
+        "zh": "v005 原画表情"
+      }
+    },
+    {
+      "id": "thinking",
+      "kind": "expression",
+      "names": {
+        "zh": [
+          "思考"
+        ]
+      },
+      "seconds": 0.9,
+      "about": {
+        "zh": "v005 原画表情"
+      }
+    },
+    {
+      "id": "smug",
+      "kind": "expression",
+      "names": {
+        "zh": [
+          "得意"
+        ]
+      },
+      "seconds": 0.9,
+      "about": {
+        "zh": "v005 原画表情"
+      }
+    },
+    {
+      "id": "pout",
+      "kind": "expression",
+      "names": {
+        "zh": [
+          "嘟嘴"
+        ]
+      },
+      "seconds": 0.9,
+      "about": {
+        "zh": "v005 原画表情"
+      }
+    },
+    {
+      "id": "worried",
+      "kind": "expression",
+      "names": {
+        "zh": [
+          "担心"
+        ]
+      },
+      "seconds": 0.9,
+      "about": {
+        "zh": "v005 原画表情"
+      }
+    },
+    {
+      "id": "determined",
+      "kind": "expression",
+      "names": {
+        "zh": [
+          "认真"
+        ]
+      },
+      "seconds": 0.9,
+      "about": {
+        "zh": "v005 原画表情"
+      }
+    },
+    {
+      "id": "flustered",
+      "kind": "expression",
+      "names": {
+        "zh": [
+          "慌张"
+        ]
+      },
+      "seconds": 0.9,
+      "about": {
+        "zh": "v005 原画表情"
+      }
+    },
+    {
+      "id": "scared",
+      "kind": "expression",
+      "names": {
+        "zh": [
+          "害怕"
+        ]
+      },
+      "seconds": 0.9,
+      "about": {
+        "zh": "v005 原画表情"
+      }
+    },
+    {
+      "id": "excited",
+      "kind": "expression",
+      "names": {
+        "zh": [
+          "期待"
+        ]
+      },
+      "seconds": 0.9,
+      "about": {
+        "zh": "v005 原画表情"
+      }
+    },
+    {
+      "id": "cry",
+      "kind": "expression",
+      "names": {
+        "zh": [
+          "大哭"
+        ]
+      },
+      "seconds": 0.9,
+      "about": {
+        "zh": "v005 原画表情"
+      }
+    },
+    {
+      "id": "confused",
+      "kind": "expression",
+      "names": {
+        "zh": [
+          "疑惑"
+        ]
+      },
+      "seconds": 0.9,
+      "about": {
+        "zh": "v005 原画表情"
+      }
+    },
+    {
+      "id": "stand",
+      "kind": "motion",
+      "names": {
+        "zh": [
+          "站起"
+        ]
+      },
+      "seconds": 1.2,
+      "about": {
+        "zh": "v005 分件动作"
+      }
+    },
+    {
+      "id": "jump",
+      "kind": "motion",
+      "names": {
+        "zh": [
+          "跳跃"
+        ]
+      },
+      "seconds": 1.2,
+      "about": {
+        "zh": "v005 分件动作"
+      }
+    },
+    {
+      "id": "hop",
+      "kind": "motion",
+      "names": {
+        "zh": [
+          "小跳"
+        ]
+      },
+      "seconds": 0.9,
+      "about": {
+        "zh": "v005 分件动作"
+      }
+    },
+    {
+      "id": "look",
+      "kind": "motion",
+      "names": {
+        "zh": [
+          "张望"
+        ]
+      },
+      "seconds": 2.7,
+      "about": {
+        "zh": "v005 分件动作"
+      }
+    },
+    {
+      "id": "turn",
+      "kind": "motion",
+      "names": {
+        "zh": [
+          "转身"
+        ]
+      },
+      "seconds": 0.4,
+      "about": {
+        "zh": "v005 分件动作"
+      }
+    },
+    {
+      "id": "nod",
+      "kind": "motion",
+      "names": {
+        "zh": [
+          "点头"
+        ]
+      },
+      "seconds": 0.8,
+      "about": {
+        "zh": "v005 分件动作"
+      }
+    },
+    {
+      "id": "shake",
+      "kind": "motion",
+      "names": {
+        "zh": [
+          "摇头"
+        ]
+      },
+      "seconds": 0.8,
+      "about": {
+        "zh": "v005 分件动作"
+      }
+    },
+    {
+      "id": "spin",
+      "kind": "motion",
+      "names": {
+        "zh": [
+          "转圈"
+        ]
+      },
+      "seconds": 0.8,
+      "about": {
+        "zh": "v005 分件动作"
+      }
+    },
+    {
+      "id": "sit",
+      "kind": "motion",
+      "names": {
+        "zh": [
+          "坐下"
+        ]
+      },
+      "seconds": 0.8,
+      "about": {
+        "zh": "v005 分件动作"
+      },
+      "lasting": true
+    },
+    {
+      "id": "sleep",
+      "kind": "motion",
+      "names": {
+        "zh": [
+          "睡眠"
+        ]
+      },
+      "seconds": 0.8,
+      "about": {
+        "zh": "v005 分件动作"
+      },
+      "lasting": true
+    },
+    {
+      "id": "dizzy",
+      "kind": "motion",
+      "names": {
+        "zh": [
+          "晕乎"
+        ]
+      },
+      "seconds": 3.2,
+      "about": {
+        "zh": "v005 分件动作"
+      }
+    },
+    {
+      "id": "walk",
+      "kind": "motion",
+      "names": {
+        "zh": [
+          "走路"
+        ]
+      },
+      "seconds": 12,
+      "about": {
+        "zh": "v005 分件动作"
+      }
+    },
+    {
+      "id": "run",
+      "kind": "motion",
+      "names": {
+        "zh": [
+          "跑步"
+        ]
+      },
+      "seconds": 12,
+      "about": {
+        "zh": "v005 分件动作"
+      }
+    },
+    {
+      "id": "wave",
+      "kind": "motion",
+      "names": {
+        "zh": [
+          "招手"
+        ]
+      },
+      "seconds": 1.7,
+      "about": {
+        "zh": "v005 分件动作"
+      }
+    },
+    {
+      "id": "bow",
+      "kind": "motion",
+      "names": {
+        "zh": [
+          "鞠躬"
+        ]
+      },
+      "seconds": 1.7,
+      "about": {
+        "zh": "v005 分件动作"
+      }
+    },
+    {
+      "id": "shiver",
+      "kind": "motion",
+      "names": {
+        "zh": [
+          "发抖"
+        ]
+      },
+      "seconds": 1.9,
+      "about": {
+        "zh": "v005 分件动作"
+      }
+    },
+    {
+      "id": "flap",
+      "kind": "motion",
+      "names": {
+        "zh": [
+          "振翅"
+        ]
+      },
+      "seconds": 1.5,
+      "about": {
+        "zh": "v005 分件动作"
+      }
+    },
+    {
+      "id": "dance",
+      "kind": "motion",
+      "names": {
+        "zh": [
+          "跳舞"
+        ]
+      },
+      "seconds": 3.4,
+      "about": {
+        "zh": "v005 分件动作"
+      }
+    },
+    {
+      "id": "working",
+      "kind": "expression",
+      "names": {
+        "zh": [
+          "工作"
+        ]
+      },
+      "seconds": 4,
+      "about": {
+        "zh": "v005 原画表情"
+      }
+    },
+    {
+      "id": "listening",
+      "kind": "expression",
+      "names": {
+        "zh": [
+          "倾听"
+        ]
+      },
+      "seconds": 4,
+      "about": {
+        "zh": "v005 原画表情"
+      }
+    }
+  ],
+  "thumb": "thumb.png",
+  "license": "AGPL-3.0-or-later",
+  "homepage": "https://github.com/scarlet20252025-cloud/Coopanion-Skin-Design"
+}

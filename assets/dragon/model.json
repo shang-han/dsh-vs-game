@@ -1,0 +1,1001 @@
+{
+  "master_sha256": "14e64e72f9ff192f4d49fff321579e05d8a2b78c23feba968ba07fed2eb93f81",
+  "canvas": [
+    1254,
+    1254
+  ],
+  "registrations": [
+    {
+      "edit": "blink-half",
+      "correlation": 0.9955867890752257,
+      "translation": [
+        [
+          1.0,
+          0.0,
+          0.24299053847789764
+        ],
+        [
+          0.0,
+          1.0,
+          0.10535243898630142
+        ]
+      ],
+      "unchanged_region": [
+        400,
+        200,
+        920,
+        420
+      ]
+    },
+    {
+      "edit": "sit",
+      "correlation": 0.9945403773401289,
+      "translation": [
+        [
+          1.0,
+          0.0,
+          0.12425362318754196
+        ],
+        [
+          0.0,
+          1.0,
+          -0.05690453201532364
+        ]
+      ],
+      "unchanged_region": [
+        380,
+        80,
+        925,
+        575
+      ]
+    }
+  ],
+  "rest_pixel_mismatches": 0,
+  "outside_eye_changes": 0,
+  "sitting_preserved_head_rows": [
+    0,
+    579
+  ],
+  "standing_feet_y": 1198,
+  "sitting_feet_y": 1120,
+  "head_pivot": [
+    670,
+    615
+  ],
+  "rotation_limit_degrees": 2.5,
+  "head_translation_limit_px": 3,
+  "independent_scaling": false,
+  "checks": {
+    "rest": "passed",
+    "blink_roi": "passed",
+    "sitting_head_identity": "passed",
+    "motion": "browser-prototype-sampled-review; limited head range, discrete sit transition",
+    "desktop": "not-tested"
+  },
+  "leg_rig": {
+    "coordinate_space": "v005 original 1254x1254; left/right are screen sides",
+    "legs": [
+      {
+        "id": "left",
+        "pivot": [
+          616,
+          1002
+        ],
+        "polygon": [
+          [
+            569,
+            1005
+          ],
+          [
+            596,
+            997
+          ],
+          [
+            618,
+            989
+          ],
+          [
+            630,
+            981
+          ],
+          [
+            661,
+            992
+          ],
+          [
+            645,
+            1034
+          ],
+          [
+            632,
+            1060
+          ],
+          [
+            634,
+            1068
+          ],
+          [
+            623,
+            1105
+          ],
+          [
+            627,
+            1139
+          ],
+          [
+            650,
+            1170
+          ],
+          [
+            653,
+            1210
+          ],
+          [
+            531,
+            1210
+          ],
+          [
+            534,
+            1154
+          ],
+          [
+            549,
+            1100
+          ],
+          [
+            549,
+            1049
+          ],
+          [
+            556,
+            1048
+          ]
+        ],
+        "crouch_angle": -12,
+        "air_angle": 18,
+        "air_lift": 45,
+        "boot_bounds": [
+          510,
+          1098,
+          669,
+          1220
+        ]
+      },
+      {
+        "id": "right",
+        "pivot": [
+          739,
+          1035
+        ],
+        "polygon": [
+          [
+            704,
+            1017
+          ],
+          [
+            777,
+            1033
+          ],
+          [
+            773,
+            1052
+          ],
+          [
+            781,
+            1058
+          ],
+          [
+            774,
+            1103
+          ],
+          [
+            792,
+            1141
+          ],
+          [
+            800,
+            1181
+          ],
+          [
+            791,
+            1203
+          ],
+          [
+            680,
+            1203
+          ],
+          [
+            680,
+            1141
+          ],
+          [
+            696,
+            1100
+          ],
+          [
+            696,
+            1049
+          ],
+          [
+            704,
+            1049
+          ]
+        ],
+        "crouch_angle": 12,
+        "air_angle": -17,
+        "air_lift": 37,
+        "boot_bounds": [
+          670,
+          1098,
+          825,
+          1220
+        ]
+      }
+    ],
+    "timing": {
+      "crouch_seconds": 0.16,
+      "air_blend_seconds": 0.1,
+      "extend_before_landing_seconds": 0.14,
+      "land_seconds": 0.3
+    },
+    "jump": {
+      "velocity": 720,
+      "gravity": 2300
+    },
+    "hop": {
+      "velocity": 480,
+      "gravity": 2300
+    },
+    "crouch_body_drop_px": 14,
+    "landing_body_drop_px": 18,
+    "notes": "Rigid boot/visible leg articulation under skirt. No knee mesh or walking claim. Host remains responsible for trajectory.",
+    "elasticity": {
+      "strength": 0.65,
+      "x": [
+        0.1,
+        0.12
+      ],
+      "y": [
+        0.16,
+        0.12
+      ],
+      "mapping": "soft tanh bounds; preserve native spring timing and rebound",
+      "idle_strength": 0.7
+    }
+  },
+  "leg_checks": {
+    "master": "14e64e72f9ff192f4d49fff321579e05d8a2b78c23feba968ba07fed2eb93f81",
+    "rest_mismatch": 0,
+    "underpaint_region": "union of explicit leg polygons only",
+    "registration_correlation": 0.9954849307023462,
+    "translation": [
+      [
+        1.0,
+        0.0,
+        0.17743021249771118
+      ],
+      [
+        0.0,
+        1.0,
+        0.040302474051713943
+      ]
+    ],
+    "motion": "48 elastic jump/hop snapshots reviewed; idle scale deviation reduced to 70% in 0.3.2; desktop not tested"
+  },
+  "motion_rig": {
+    "arms": [
+      {
+        "id": "left",
+        "pivot": [
+          610,
+          645
+        ],
+        "polygon": [
+          [
+            612,
+            623
+          ],
+          [
+            632,
+            635
+          ],
+          [
+            642,
+            652
+          ],
+          [
+            638,
+            675
+          ],
+          [
+            625,
+            698
+          ],
+          [
+            635,
+            718
+          ],
+          [
+            617,
+            778
+          ],
+          [
+            588,
+            849
+          ],
+          [
+            567,
+            890
+          ],
+          [
+            540,
+            891
+          ],
+          [
+            504,
+            876
+          ],
+          [
+            487,
+            892
+          ],
+          [
+            466,
+            884
+          ],
+          [
+            455,
+            866
+          ],
+          [
+            457,
+            849
+          ],
+          [
+            468,
+            815
+          ],
+          [
+            464,
+            801
+          ],
+          [
+            489,
+            769
+          ],
+          [
+            516,
+            739
+          ],
+          [
+            542,
+            715
+          ],
+          [
+            553,
+            677
+          ],
+          [
+            577,
+            676
+          ],
+          [
+            590,
+            647
+          ],
+          [
+            601,
+            631
+          ]
+        ]
+      },
+      {
+        "id": "right",
+        "pivot": [
+          737,
+          655
+        ],
+        "polygon": [
+          [
+            725,
+            626
+          ],
+          [
+            747,
+            638
+          ],
+          [
+            759,
+            661
+          ],
+          [
+            768,
+            683
+          ],
+          [
+            778,
+            685
+          ],
+          [
+            791,
+            716
+          ],
+          [
+            816,
+            747
+          ],
+          [
+            845,
+            778
+          ],
+          [
+            880,
+            806
+          ],
+          [
+            887,
+            825
+          ],
+          [
+            899,
+            856
+          ],
+          [
+            900,
+            887
+          ],
+          [
+            888,
+            894
+          ],
+          [
+            870,
+            875
+          ],
+          [
+            856,
+            880
+          ],
+          [
+            836,
+            862
+          ],
+          [
+            820,
+            851
+          ],
+          [
+            800,
+            814
+          ],
+          [
+            778,
+            782
+          ],
+          [
+            762,
+            753
+          ],
+          [
+            745,
+            710
+          ],
+          [
+            750,
+            689
+          ],
+          [
+            740,
+            667
+          ]
+        ],
+        "exclude_ellipses": [
+          [
+            709,
+            706,
+            782,
+            781
+          ]
+        ]
+      }
+    ],
+    "gait": {
+      "angle_gain": 0.75,
+      "max_angle": 38,
+      "lift_gain": 3,
+      "arm_gain": 0.65,
+      "max_arm_angle": 22,
+      "blend_rate": 10,
+      "walk_angle": 8,
+      "run_angle": 14,
+      "walk_stride_gain": 2.7,
+      "run_stride_gain": 3.0,
+      "walk_lift_gain": 2.2,
+      "run_lift_gain": 2.6,
+      "run_arm_sweep": 22,
+      "foot_anchor_mode": "native foot displacement mapped to own sole; rotation compensated",
+      "run_near_arm": 0,
+      "run_arm_angles": [
+        38,
+        35
+      ],
+      "run_torso_occluder": "M 610 610 L 725 610 L 773 705 L 782 770 L 803 851 L 858 950 L 932 1060 L 854 1102 L 690 1040 L 540 1110 L 398 1051 L 469 940 L 553 801 L 579 701 Z",
+      "run_shoulder_keep": {
+        "cx": 610,
+        "cy": 651,
+        "rx": 42,
+        "ry": 48
+      }
+    },
+    "wave": {
+      "arm": 0,
+      "raise_degrees": 95,
+      "oscillation_degrees": 9,
+      "cycles": 3
+    },
+    "air_arms": [
+      18,
+      -16
+    ],
+    "notes": "Coordinates and side names refer to original v005 canvas. Official kit foot segments drive gait phase; own anchors and masks drive art."
+  },
+  "arm_checks": {
+    "master_sha256": "14e64e72f9ff192f4d49fff321579e05d8a2b78c23feba968ba07fed2eb93f81",
+    "rest_mismatches": 0,
+    "registration_correlation": 0.9955320171560073,
+    "translation": [
+      [
+        1.0,
+        0.0,
+        0.22040122747421265
+      ],
+      [
+        0.0,
+        1.0,
+        0.039627328515052795
+      ]
+    ],
+    "motion": "160 targeted browser snapshots reviewed across locomotion, pose and face contact sheets; not exhaustive",
+    "inherited_elasticity": {
+      "strength": 0.65,
+      "x": [
+        0.1,
+        0.12
+      ],
+      "y": [
+        0.16,
+        0.12
+      ],
+      "mapping": "soft tanh bounds; preserve native spring timing and rebound",
+      "idle_strength": 0.7
+    },
+    "desktop": "not-tested"
+  },
+  "secondary_rig": {
+    "method": "bounded-local-displacement-on-existing-textures",
+    "map_size": 418,
+    "hair": {
+      "k": 55,
+      "damping": 9,
+      "limit": 32,
+      "idle": 17,
+      "motion": 23,
+      "regions": [
+        [
+          369,
+          669,
+          120,
+          191,
+          1,
+          0.22
+        ],
+        [
+          944,
+          683,
+          79,
+          184,
+          1,
+          -0.18
+        ]
+      ],
+      "split_y": 610,
+      "root_blend_px": 50,
+      "render_method": "original PNG mesh, zero displacement on inner attachment boundary; no patch; seated original art retained"
+    },
+    "wings": {
+      "k": 85,
+      "damping": 11,
+      "limit": 40,
+      "idle": 16,
+      "motion": 30,
+      "regions": [
+        [
+          377,
+          710,
+          109,
+          89,
+          -0.35,
+          1
+        ],
+        [
+          924,
+          754,
+          75,
+          75,
+          0.35,
+          1
+        ]
+      ]
+    },
+    "tail": {
+      "k": 40,
+      "damping": 8,
+      "limit": 16,
+      "idle": 4,
+      "motion": 10,
+      "regions": [
+        [
+          351,
+          962,
+          142,
+          129,
+          0.3,
+          1
+        ]
+      ]
+    },
+    "notes": "All regions in locked 1254px master coordinates; face and attachment roots have zero weight. These are small local deformations, not separately repainted full hidden appendages.",
+    "ears": {
+      "k": 80,
+      "damping": 12,
+      "limit": 24,
+      "idle": 9,
+      "motion": 18,
+      "regions": [
+        [
+          415,
+          507,
+          75,
+          38,
+          0,
+          1
+        ],
+        [
+          932,
+          510,
+          57,
+          40,
+          0,
+          -1
+        ]
+      ]
+    },
+    "ahoge": {
+      "k": 140,
+      "damping": 6,
+      "limit": 38,
+      "idle": 30,
+      "motion": 40,
+      "regions": [
+        [
+          698,
+          111,
+          86,
+          65,
+          1,
+          0.15
+        ]
+      ],
+      "method": "original texture clipped into independent SVG root rotation; source-pixel root underlap",
+      "pivot": [
+        675,
+        195
+      ]
+    },
+    "bangs": {
+      "k": 65,
+      "damping": 10,
+      "limit": 22,
+      "idle": 9,
+      "motion": 18,
+      "regions": [
+        [
+          721,
+          382,
+          61,
+          109,
+          1,
+          0.15
+        ],
+        [
+          510,
+          413,
+          46,
+          128,
+          1,
+          0.1
+        ]
+      ]
+    }
+  },
+  "behavior_rig": {
+    "drag": {
+      "leg_degrees": 6,
+      "rate": 5
+    },
+    "thinking": {
+      "arms": [
+        6,
+        -3
+      ],
+      "head_degrees": -1.8,
+      "head_y": -1
+    },
+    "working": {
+      "arms": [
+        10,
+        -8
+      ],
+      "head_degrees": 0.5,
+      "head_y": 2,
+      "pulse_degrees": 2,
+      "rate": 5
+    },
+    "listening": {
+      "arms": [
+        2,
+        -2
+      ],
+      "head_degrees": -2,
+      "head_y": -1
+    }
+  },
+  "wing_rig": {
+    "parts": [
+      {
+        "id": "left",
+        "root": [
+          628,
+          740
+        ],
+        "polygon": [
+          [
+            276,
+            805
+          ],
+          [
+            276,
+            605
+          ],
+          [
+            514,
+            605
+          ],
+          [
+            512,
+            690
+          ],
+          [
+            552,
+            719
+          ],
+          [
+            569,
+            703
+          ],
+          [
+            601,
+            720
+          ],
+          [
+            591,
+            779
+          ],
+          [
+            554,
+            752
+          ],
+          [
+            536,
+            765
+          ],
+          [
+            516,
+            803
+          ],
+          [
+            493,
+            777
+          ],
+          [
+            472,
+            770
+          ],
+          [
+            450,
+            780
+          ],
+          [
+            429,
+            806
+          ],
+          [
+            420,
+            779
+          ],
+          [
+            400,
+            757
+          ],
+          [
+            373,
+            748
+          ],
+          [
+            345,
+            751
+          ],
+          [
+            313,
+            778
+          ]
+        ]
+      },
+      {
+        "id": "right",
+        "root": [
+          766,
+          751
+        ],
+        "polygon": [
+          [
+            797,
+            722
+          ],
+          [
+            822,
+            635
+          ],
+          [
+            1000,
+            635
+          ],
+          [
+            1000,
+            830
+          ],
+          [
+            947,
+            784
+          ],
+          [
+            929,
+            773
+          ],
+          [
+            909,
+            775
+          ],
+          [
+            894,
+            790
+          ],
+          [
+            884,
+            813
+          ],
+          [
+            865,
+            787
+          ],
+          [
+            842,
+            776
+          ],
+          [
+            814,
+            795
+          ],
+          [
+            799,
+            772
+          ],
+          [
+            774,
+            767
+          ],
+          [
+            774,
+            738
+          ]
+        ]
+      }
+    ],
+    "cycles": 4,
+    "angle_degrees": 9,
+    "fold": 0.1,
+    "source": "v005 existing body + existing sleeve underpaint; wings contain no arm texture",
+    "underpaint": "built-in imagegen wing removal, only original wing alpha admitted",
+    "tail_gain": 0.42,
+    "seated_gain": 0.3,
+    "limit": 12,
+    "driver": "all official whale tail inputs @ 91293b3 mapped to independent dragon wings",
+    "tempo": {
+      "baseline": "r12",
+      "rate_scale": 0.85,
+      "amplitude_scale": 1.2
+    }
+  },
+  "tail_rig": {
+    "idle_degrees": 5.4,
+    "stride_degrees": 1.8,
+    "limit_degrees": 6.5,
+    "method": "original pixels rotated behind fixed root overlap; no displacement or stretching"
+  },
+  "part_registration": {
+    "arm-left": [
+      0.67,
+      0,
+      0,
+      0.67,
+      222,
+      253
+    ],
+    "arm-right": [
+      0.67,
+      0,
+      0,
+      0.67,
+      238,
+      251
+    ],
+    "torso-clean": [
+      0.8522485602331265,
+      0.005739896639791613,
+      -0.005739896639791613,
+      0.8522485602331265,
+      99.31488048879417,
+      147.31739828587408
+    ],
+    "head-front": [
+      0.7361574739147847,
+      -0.0049014367903926995,
+      0.0049014367903926995,
+      0.7361574739147847,
+      175.57009181361533,
+      0.41613068365605416
+    ],
+    "legs-clean": [
+      0.7497169419009682,
+      0.014558744400495585,
+      -0.014558744400495583,
+      0.7497169419009683,
+      176.42758965098074,
+      279.66827545630497
+    ],
+    "dress-clean": [
+      0.8506665894854769,
+      0.0060967695781072705,
+      -0.0060967695781072705,
+      0.8506665894854769,
+      100.35419089973769,
+      148.20946758222584
+    ],
+    "dress-front": [
+      0.8511212077335408,
+      0.006097994601806807,
+      -0.006097994601806807,
+      0.8511212077335408,
+      99.78568129586955,
+      147.87834913545342
+    ],
+    "arm-wave-raised": [
+      0.5,
+      0,
+      0,
+      0.5,
+      184.5,
+      245
+    ]
+  }
+}

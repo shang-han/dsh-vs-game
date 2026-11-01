@@ -1,0 +1,25 @@
+{
+  "source": "https://github.com/Pal-AI-Lab/Cortico/blob/91293b3e31b94397a8f2eb79dffec40f4c6d8817/packages/cortico-world-desktop-pet/web/whale/figure.js",
+  "license": "AGPL-3.0-or-later",
+  "copied_function": "drawFx",
+  "unchanged": [
+    "SVG paths",
+    "colors",
+    "timing",
+    "stroke widths"
+  ],
+  "adaptation": "rig neck attachment replaced with dragon head group; uniform coordinate mapping translate(60,-90) scale(5)",
+  "tail_retarget": {
+    "source_lines": "473-482, 577-584, 638-639",
+    "preserved": [
+      "all mood wag values",
+      "mood smoothing",
+      "tail spring stiffness/damping/limit",
+      "swing input",
+      "idle timing",
+      "active flap envelope and timing",
+      "seated rotation offset"
+    ],
+    "adapted": "whale tail rotation and bend drive dragon wing rotation/fold; amplitude bounded for dragon geometry; working aliases thinking; arms and jumping excluded"
+  }
+}
