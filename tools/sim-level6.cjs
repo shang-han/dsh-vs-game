@@ -267,20 +267,35 @@ check('三阶段：5 秒时还活着（处决未到）', e.player.hp > 0 && e.ph
 for (let i = 0; i < 60 * 4; i++) e.tick(1 / 60);
 check('三阶段：6.5 秒后被处决', e.player.hp <= 0 || e.phase === 'dying' || e.phase === 'bossintro', 'hp=' + e.player.hp + ' phase=' + e.phase);
 for (let i = 0; i < 60 * 3; i++) e.tick(1 / 60);
-check('死亡后：回到开局场景 + 循环对白（闭环）',
-  e.storyMode === true && !!e.story && !e.dragonBoss() && e.phase === 'bossintro' && e.bossIntro?.kind === 'story-loop',
+check('死亡后：回到开局场景 + 醒来独白（闭环）',
+  e.storyMode === true && !!e.story && !e.dragonBoss() && e.phase === 'bossintro' && e.bossIntro?.kind === 'story-loopmono',
   'storyMode=' + e.storyMode + ' kind=' + e.bossIntro?.kind + ' boss=' + !!e.dragonBoss());
-check('死亡后：循环对白非空且没有「系统」说话',
-  (e.bossIntro?.lines?.length ?? 0) >= 4 && !(e.bossIntro?.lines ?? []).some((l) => l.speaker === '系统') && (e.bossIntro?.lines ?? []).some((l) => String(l.text).includes('新建文件夹')),
+check('死亡后：醒来独白非空且没有「系统」说话',
+  (e.bossIntro?.lines?.length ?? 0) >= 3 && !(e.bossIntro?.lines ?? []).some((l) => l.speaker === '系统') && (e.bossIntro?.lines ?? []).some((l) => String(l.text).includes('新建文件夹')),
   JSON.stringify((e.bossIntro?.lines ?? []).map((l) => l.speaker)));
 check('死亡后：BGM 已停 / 阶段状态清空', !e.dragonBgm && !e.dragonLock && !e.dragonReel, 'bgm=' + !!e.dragonBgm + ' lock=' + JSON.stringify(e.dragonLock));
 check('死亡后：世界回到程序化虚无（不是关卡 6 地图）', !e.level && !!e.procmap, 'level=' + (e.level?.id ?? 'null') + ' procmap=' + !!e.procmap);
 
-// 推进循环对白 → 龙娘起飞、留下白饭 → 收尾回家
+// 和开局一样：先走到 ？？？ 面前按 F
 for (let i = 0; i < 40 && e.phase === 'bossintro'; i++) e.advanceBossIntro();
-check('死亡后：龙娘起飞、留下白饭', e.phase === 'playing' && e.story?.step === 'loopsend', 'phase=' + e.phase + ' step=' + e.story?.step);
-for (let i = 0; i < 60 * 5; i++) e.tick(1 / 60);
-check('闭环结束：回到家里', e.phase === 'home' || e.inHomeScene() === true, 'phase=' + e.phase + ' homeScene=' + !!e.homeScene);
+check('开局重演：进入 walk（？？？在前面）', e.phase === 'playing' && e.story?.step === 'walk', 'phase=' + e.phase + ' step=' + e.story?.step);
+e.player.x = e.story.npc.x - 20; e.player.y = e.story.npc.y;
+e.focused = true;
+e.keys.add('f');
+e.tick(1 / 60);
+e.keys.delete('f');
+check('开局重演：按 F 触发新对话', e.phase === 'bossintro' && e.bossIntro?.kind === 'story-looptalk', 'kind=' + e.bossIntro?.kind);
+for (let i = 0; i < 40 && e.phase === 'bossintro'; i++) e.advanceBossIntro();
+check('开局重演：龙娘起飞、留下白饭', e.phase === 'playing' && e.story?.step === 'loopsend', 'phase=' + e.phase + ' step=' + e.story?.step);
+// 等白饭落地，走过去按 F 捡
+for (let i = 0; i < 30; i++) e.tick(1 / 60);
+if (e.story?.bowl) { e.player.x = e.story.bowl.x; e.player.y = e.story.bowl.y; }
+e.focused = true;
+e.keys.add('f');
+e.tick(1 / 60);
+e.keys.delete('f');
+for (let i = 0; i < 60 * 3; i++) e.tick(1 / 60);
+check('闭环结束：回到家里（不播小狼）', (e.phase === 'home' || e.inHomeScene() === true) && !e.homeScene, 'phase=' + e.phase + ' homeScene=' + !!e.homeScene);
 
 // ── 龙娘帧素材：预渲染帧齐全 / 绘制不抛错 / Boss 头像存在 ──
 const FRAME_DIR = require('path').join(__dirname, '..', 'assets', 'dragon', 'frames');
