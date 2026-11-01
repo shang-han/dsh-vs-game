@@ -365,7 +365,9 @@ e.player.maxHp = 99999; e.player.hp = 99999; e.player.invuln = 999;
 for (let i = 0; i < 60; i++) e.tick(1 / 60);
 check('开局重演：文件怪包围（16 只）', e.enemies.length >= 12, 'enemies=' + e.enemies.length);
 check('开局重演：白饭落地', !!e.story?.bowl, 'bowl=' + JSON.stringify(e.story?.bowl));
-check('开局重演：大肥鱼吐槽对白', e.phase === 'bossintro' && e.bossIntro?.kind === 'story-swarm', 'kind=' + e.bossIntro?.kind);
+check('开局重演：吐槽对白去掉「饿死鬼」', e.phase === 'bossintro' && e.bossIntro?.kind === 'story-swarm-loop'
+  && e.bossIntro.lines.length === 1 && !JSON.stringify(e.bossIntro.lines).includes('饿死鬼'),
+  'kind=' + e.bossIntro?.kind + ' lines=' + JSON.stringify(e.bossIntro?.lines));
 for (let i = 0; i < 40 && e.phase === 'bossintro'; i++) e.advanceBossIntro();
 // 走过去按 F 抢饭
 if (e.story?.bowl) { e.player.x = e.story.bowl.x; e.player.y = e.story.bowl.y; }
@@ -388,7 +390,7 @@ check('闭环结束：回到家里（不播小狼）', (e.phase === 'home' || e.
 
 // ── 龙娘帧素材：预渲染帧齐全 / 绘制不抛错 / Boss 头像存在 ──
 const FRAME_DIR = require('path').join(__dirname, '..', 'assets', 'dragon', 'frames');
-const frameSpec = { idle: 6, determined: 5, angry: 5, sit: 4, hurt: 3 };
+const frameSpec = { idle: 24, determined: 18, angry: 18, sit: 12, hurt: 6 };
 let frameOk = true, frameTotal = 0;
 for (const [state, n] of Object.entries(frameSpec)) {
   for (let i = 0; i < n; i++) {
