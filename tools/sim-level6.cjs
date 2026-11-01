@@ -320,8 +320,8 @@ e4.enemies = [];
 e4.updateDragonView(3200);
 check('覆盖层：没有 Boss 时隐藏', view4.svg.style.display === 'none', view4.svg.style.display);
 console.warn = warn;
-try { e4.drawDragonTint(fakeCtx()); e4.drawDragonCut(fakeCtx()); } catch (err) { check('覆盖层：色调/过场绘制不抛错', false, String(err)); }
-check('覆盖层：色调/过场绘制不抛错', true);
+try { e4.drawDragonTint(fakeCtx()); e4.drawDragonCut(fakeCtx()); e.drawDragonAura(fakeCtx()); } catch (err) { check('覆盖层：色调/过场/占位龙影绘制不抛错', false, String(err)); }
+check('覆盖层：色调/过场/占位龙影绘制不抛错', true);
 
 // ── 五宝箱门槛：没开完不能进 Boss 房 ─────────────────────
 const e3 = makeEngine();
