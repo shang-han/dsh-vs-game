@@ -10,10 +10,10 @@ window.addEventListener('error', (e) => { window.__err = 'ERR ' + (e.message || 
 window.addEventListener('unhandledrejection', (e) => { window.__err = 'REJ ' + ((e.reason && e.reason.message) || e.reason); document.title = window.__err; document.body.setAttribute('data-err', window.__err); });
 </script>
 <script type="module">
-import { createDragonBody } from '/assets/dragon/figure.js';
+import { createDragonBody } from '/model/figure.js';
 
-const BASE = location.origin + '/assets/dragon/';
-const BASE_REL = '/assets/dragon/';
+const BASE = location.origin + '/model/';
+const BASE_REL = '/model/';
 document.title = 'loading model';
 const model = await (await fetch(BASE_REL + 'model.json')).json();
 const legs = (model.leg_rig?.legs ?? []).map((L) => [L.pivot[0], L.pivot[1], L.pivot[0], L.pivot[1]]);

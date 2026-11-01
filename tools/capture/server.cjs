@@ -7,6 +7,7 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..', '..');
 const ASSETS = path.join(ROOT, 'assets');
 const OUT = path.join(ASSETS, 'dragon', 'frames');
+const MODEL = path.join(__dirname, 'dragon');   // Live2D 骨骼包只在抓帧时用，不随插件发布
 const PORT = Number(process.env.CAP_PORT || 61945);
 fs.mkdirSync(OUT, { recursive: true });
 
@@ -39,8 +40,17 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, { 'content-type': 'application/json' }).end(JSON.stringify({ saved }));
     return;
   }
-  let file = url.pathname === '/' ? path.join(__dirname, 'capture.html') : path.join(ASSETS, url.pathname.replace(/^\/assets\//, ''));
-  if (!file.startsWith(ASSETS) && url.pathname !== '/') {
+  let file;
+  let root = ASSETS;
+  if (url.pathname === '/') {
+    file = path.join(__dirname, 'capture.html');
+  } else if (url.pathname.startsWith('/model/')) {
+    root = MODEL;
+    file = path.join(MODEL, url.pathname.slice('/model/'.length));
+  } else {
+    file = path.join(ASSETS, url.pathname.replace(/^\/assets\//, ''));
+  }
+  if (!file.startsWith(root) && url.pathname !== '/') {
     res.writeHead(403).end('no');
     return;
   }
