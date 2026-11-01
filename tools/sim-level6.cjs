@@ -146,6 +146,8 @@ function makeEngine(withLayer = false) {
   return new GameEngine(canvas, { sendWs: (m) => sent.push(m), onHomeAction: noop });
 }
 
+const __warn = console.warn;
+console.warn = noop;   // Node 里 SVG 覆盖层动态 import 必然失败，静音
 const results = [];
 function check(name, cond, extra = '') {
   results.push({ name, ok: !!cond, extra });
@@ -165,6 +167,7 @@ check('关卡载入：5 个宝箱', e.chests.length === 5, 'chests=' + e.chests.
 
 // 开完 5 个箱子（直接标记）
 for (const c of e.chests) c.opened = true;
+e.bossSpawned = true;
 e.enterBossRoom();
 check('进入 Boss 房：对话中', e.phase === 'bossintro' && !!e.bossIntro, e.phase);
 
@@ -273,6 +276,7 @@ e4.level = level;
 e4.world = { ...level.world };
 e4.reset();
 e4.phase = 'playing';
+e4.bossSpawned = true;
 e4.enterBossRoom();
 const warn = console.warn; console.warn = noop;   // 动态 import 在 Node 里必然失败，静音
 for (let i = 0; i < 50 && e4.phase === 'bossintro'; i++) e4.advanceBossIntro();
@@ -338,6 +342,7 @@ const gateDoor2 = e2.corridor.doors.find((d) => d.levelId === 'truth-gate');
 check('长廊：通关第 5 关后解锁', gateDoor2 && gateDoor2.locked === false, String(gateDoor2?.locked));
 check('长廊：第 6 关不再出现在上门', !e2.corridor.doors.some((d) => d.kind === 'level' && d.side === 'upper' && d.levelId === 'truth-gate'));
 
+console.warn = __warn;
 const failed = results.filter((r) => !r.ok);
 console.log('\n' + (results.length - failed.length) + '/' + results.length + ' checks passed');
 if (failed.length) { console.log('FAILED: ' + failed.map((f) => f.name).join(' / ')); process.exit(1); }
