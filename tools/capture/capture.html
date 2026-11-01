@@ -55,7 +55,9 @@ async function snap(name, face, t, mode = 'idle', sit = 0) {
   state.modeT = 0;
   state.sit = sit;
   state.gesture = null;
-  state.blink = 0;
+  // 让帧序列本身带上轻微张望和眨眼，避免每帧几乎一样
+  state.look = [Math.sin(t * 2.1) * 0.45, Math.cos(t * 1.7) * 0.22];
+  state.blink = Math.sin(t * 5.2) > 0.965 ? 1 : 0;
   state.legs = legs;
   fig.draw(g, fx, state);
   const xml = new XMLSerializer().serializeToString(svg);
