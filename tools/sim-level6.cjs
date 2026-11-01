@@ -206,10 +206,12 @@ e.player.maxHp = 99999; e.player.hp = 99999;
 // 一阶段：灵活游走 / 残影 / 闪避 / 坐下-站起过渡
 {
   boss.dragonDashCd = 99; boss.dragonLeap = null;
+  boss.dragonAgile = { tx: boss.x + (boss.x < e.world.w / 2 ? 220 : -220), ty: boss.y };
+  boss.dragonAgileT = 0;
   const x0 = boss.x, y0 = boss.y;
-  for (let i = 0; i < 40; i++) e.tick(1 / 60);
+  for (let i = 0; i < 30; i++) e.tick(1 / 60);
   const moved = Math.hypot(boss.x - x0, boss.y - y0);
-  check('一阶段：不停游走（不是站桩）', moved > 25, 'moved=' + Math.round(moved));
+  check('一阶段：不停游走（不是站桩）', moved > 40, 'moved=' + Math.round(moved));
   check('一阶段：移动有残影', (e.dragonGhosts?.length ?? 0) > 0, 'ghosts=' + (e.dragonGhosts?.length ?? 0));
   // 闪避：20 次攻击里应该出现若干次「闪避」
   let dodges = 0;
@@ -502,6 +504,23 @@ check('长廊：第 6 关不再出现在上门', !e2.corridor.doors.some((d) => 
     (burner.in ?? []).some((b) => b.item === 'mat-wood' && b.n === 1) && eL.inventory.length === 1,
     'in=' + JSON.stringify(burner.in) + ' inv=' + eL.inventory.length);
 
+  // 分流器：按口轮转，不会全塞给同一个出口
+  {
+    const sp3 = { id: 'sp3', kind: 'splitter', x: 2, y: 2, dir: 1, item: null, prog: 0, sides: [1, 2, 1, 1], inSide: null };
+    const bU = { id: 'bu2', kind: 'belt', x: 2, y: 1, dir: 0, item: null, prog: 0, inSide: 2, sides: [1, 2, 1, 1] };
+    const bR = { id: 'br2', kind: 'belt', x: 3, y: 2, dir: 1, item: null, prog: 0, inSide: 3, sides: [1, 2, 1, 1] };
+    const bD = { id: 'bd2', kind: 'belt', x: 2, y: 3, dir: 2, item: null, prog: 0, inSide: 0, sides: [1, 2, 1, 1] };
+    eL.lab = { stage: 1, grid: [sp3, bU, bR, bD], power: { stored: 100, cap: 100, brownout: false }, store: {}, mineLv: 1 };
+    const got = [];
+    for (let i = 0; i < 3; i++) {
+      sp3.item = 'ore-iron'; sp3.prog = 1;
+      eL.labBeltStep(sp3, 0);
+      const port = bU.item ? 'up' : bR.item ? 'right' : bD.item ? 'down' : 'none';
+      got.push(port);
+      bU.item = null; bR.item = null; bD.item = null;
+    }
+    check('实验室：分流器三个口轮流出货', got.join(',') === 'up,right,down', 'order=' + got.join(','));
+  }
   eL.lab = { stage: 1, grid: [], power: { stored: 0, cap: 100, brownout: true }, store: {}, mineLv: 3 };
   check('实验室：矿场/采矿机等级统一读 lab.mineLv', eL.labMineLevel() === 3, 'lv=' + eL.labMineLevel());
   eL.homeDevices = [{ kind: 'basic-mine', built: true, mineLevel: 3 }];
