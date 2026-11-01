@@ -177,6 +177,16 @@ const boss = e.dragonBoss();
 check('Boss 已生成：正义', !!boss && boss.bossName === '正义', boss?.bossName ?? 'none');
 check('第一段 10 万血', boss && boss.phase === 0 && boss.maxHp === 100000, boss ? boss.maxHp : 'none');
 
+// 进关对话：只有一句
+const e5 = makeEngine();
+e5.clearedLevels = new Set(['seaside']);
+e5.level = level;
+e5.world = { ...level.world };
+e5.start();
+check('进关只播一句「终于集齐 3600 万 token」',
+  e5.phase === 'bossintro' && e5.bossIntro?.kind === 'pre' && e5.bossIntro.lines.length === 1 && String(e5.bossIntro.lines[0].text).includes('3600 万'),
+  JSON.stringify(e5.bossIntro?.lines));
+
 // 一阶段：不吐弹幕、本体不伤人、会冲撞玩家
 e.player.maxHp = 100; e.player.hp = 100; e.player.invuln = 0;
 e.player.x = boss.x; e.player.y = boss.y;
