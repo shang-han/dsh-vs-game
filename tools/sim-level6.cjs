@@ -267,26 +267,15 @@ check('三阶段：5 秒时还活着（处决未到）', e.player.hp > 0 && e.ph
 for (let i = 0; i < 60 * 4; i++) e.tick(1 / 60);
 check('三阶段：6.5 秒后被处决', e.player.hp <= 0 || e.phase === 'dying' || e.phase === 'bossintro', 'hp=' + e.player.hp + ' phase=' + e.phase);
 for (let i = 0; i < 60 * 3; i++) e.tick(1 / 60);
-check('死亡后：回到开头（龙娘收走/世界复位）', e.dragonLoopMode === true && !e.dragonBoss() && e.world.w === level.world.w,
-  'loop=' + e.dragonLoopMode + ' world=' + e.world.w);
+check('死亡后：回到开局虚无剧情（闭环）',
+  e.storyMode === true && !!e.story && !e.dragonBoss() && e.phase === 'bossintro' && e.bossIntro?.kind === 'story-mono',
+  'storyMode=' + e.storyMode + ' kind=' + e.bossIntro?.kind + ' boss=' + !!e.dragonBoss());
+check('死亡后：BGM 已停 / 阶段状态清空', !e.dragonBgm && !e.dragonLock && !e.dragonReel, 'bgm=' + !!e.dragonBgm + ' lock=' + JSON.stringify(e.dragonLock));
+check('死亡后：世界回到程序化虚无（不是关卡 6 地图）', !e.level && !!e.procmap, 'level=' + (e.level?.id ?? 'null') + ' procmap=' + !!e.procmap);
 
-// 循环对话
-for (let i = 0; i < 30 && e.phase === 'bossintro'; i++) e.advanceBossIntro();
-e.phase = 'playing';
-// 走到门前
-e.player.x = level.bossZone.xf * e.world.w;
-e.player.y = level.bossZone.yf * e.world.h;
-e.checkBossZone();
-check('第二次到门前：认出你的对话', e.phase === 'bossintro' && e.bossIntro?.kind === 'dragon-loop-meet', e.bossIntro?.kind ?? e.phase);
+// 推进开局独白 → 回到 walk（？？？ 在前面等）
 for (let i = 0; i < 40 && e.phase === 'bossintro'; i++) e.advanceBossIntro();
-check('留下白饭 + 通关宝箱', !!e.dragonBowl && e.chests.some((c) => c.bossChest), 'bowl=' + !!e.dragonBowl);
-check('循环结束：BGM 已停', !e.dragonBgm, String(e.dragonBgm));
-const bossChest = e.chests.find((c) => c.bossChest);
-if (bossChest) {
-  e.openChest(bossChest);
-  check('通关宝箱：上报 BOSS_KILL', sent.some((m) => m && m.kind === 'boss-kill' && m.levelId === 'truth-gate'),
-    JSON.stringify(sent.filter((m) => m && m.kind === 'boss-kill').slice(-1)));
-} else check('通关宝箱：存在', false);
+check('死亡后：进入开局 walk 阶段（能去找 ？？？）', e.phase === 'playing' && e.story?.step === 'walk', 'phase=' + e.phase + ' step=' + e.story?.step);
 
 // ── SVG 覆盖层：状态映射 / 跟随位置 / 阶段表情 ────────────
 const e4 = makeEngine(true);
@@ -340,7 +329,7 @@ e3.player.x = level.bossZone.xf * e3.world.w;
 e3.player.y = level.bossZone.yf * e3.world.h;
 e3.checkBossZone();
 check('门槛：开完 5 个宝箱后进 Boss 房', e3.bossRoomMode === true && e3.bossSpawned === true, 'room=' + e3.bossRoomMode);
-check('门槛：开场白是正义的 5 句', e3.bossIntro?.lines?.length === 5 && e3.bossIntro.lines[0].speaker === '正义', 'lines=' + (e3.bossIntro?.lines?.length ?? 0));
+check('门槛：开场白直接「你终于来了呢」', e3.bossIntro?.lines?.length === 1 && e3.bossIntro.lines[0].speaker === '正义' && String(e3.bossIntro.lines[0].text).includes('你终于来了呢'), 'lines=' + JSON.stringify(e3.bossIntro?.lines));
 
 // ── 长廊入口：第 2 关门口下方的紫色地毯 ─────────────────────
 const LEVELS = require('../lib/levels/index.js').LEVELS;
