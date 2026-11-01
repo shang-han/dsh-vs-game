@@ -301,7 +301,7 @@ try {
 } catch (err) {
   check('龙娘帧：绘制不抛错', false, String(err));
 }
-check('Boss 头像：assets/dragon/thumb.png 存在', fs.existsSync(require('path').join(__dirname, '..', 'assets', 'dragon', 'thumb.png')));
+check('Boss 头像：assets/npc/codex-girl.png 存在', fs.existsSync(require('path').join(__dirname, '..', 'assets', 'npc', 'codex-girl.png')));
 
 // ── 五宝箱门槛：没开完不能进 Boss 房 ─────────────────────// ── 五宝箱门槛：没开完不能进 Boss 房 ─────────────────────
 const e3 = makeEngine();
