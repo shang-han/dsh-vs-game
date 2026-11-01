@@ -177,12 +177,34 @@ const boss = e.dragonBoss();
 check('Boss 已生成：正义', !!boss && boss.bossName === '正义', boss?.bossName ?? 'none');
 check('第一段 10 万血', boss && boss.phase === 0 && boss.maxHp === 100000, boss ? boss.maxHp : 'none');
 
+// 一阶段：不吐弹幕、本体不伤人、会冲撞玩家
+e.player.maxHp = 100; e.player.hp = 100; e.player.invuln = 0;
+e.player.x = boss.x; e.player.y = boss.y;
+for (let i = 0; i < 30; i++) e.tick(1 / 60);
+check('一阶段：本体接触不造成伤害', e.player.hp === 100, 'hp=' + e.player.hp);
+boss.dragonDashCd = 99; boss.dragonDash = null;
+for (let i = 0; i < 60 * 2; i++) e.tick(1 / 60);
+check('一阶段：不放弹幕', e.enemyBullets.length === 0, 'bullets=' + e.enemyBullets.length);
+e.player.x = Math.min(e.world.w - 60, boss.x + 220); e.player.y = boss.y;
+e.player.maxHp = 5000; e.player.hp = 5000; e.player.invuln = 0;
+boss.dragonDashCd = 0;
+for (let i = 0; i < 60 * 2; i++) e.tick(1 / 60);
+check('一阶段：会冲撞玩家（有预警/落点）', !!e.dragonImpactFx || !!boss.dragonDash, 'dash=' + JSON.stringify(boss.dragonDash?.phase ?? null));
+check('一阶段：冲撞落点造成伤害', e.player.hp < 5000, 'hp=' + e.player.hp);
+e.player.maxHp = 99999; e.player.hp = 99999;
+
 // 一阶段：打空第一段
 for (let i = 0; i < 40 && boss.phase === 0; i++) e.hurtEnemy(boss, 20000);
 check('第一段打完：过场对话', e.phase === 'bossintro' && e.bossIntro?.kind === 'dragon-phase-1', e.bossIntro?.kind ?? e.phase);
 for (let i = 0; i < 50 && e.phase === 'bossintro'; i++) e.advanceBossIntro();
 check('第二段开始：重置 10 万 + 封锁', boss.phase === 1 && boss.hp === 100000 && e.dragonLock?.weapon === true && e.dragonLock?.skill === true,
   'phase=' + boss.phase + ' hp=' + boss.hp);
+{
+  e.player.x = 60; e.player.y = 60;
+  const homeDist = Math.hypot(boss.x - (boss.home?.x ?? boss.x), boss.y - (boss.home?.y ?? boss.y));
+  for (let i = 0; i < 60 * 2; i++) e.tick(1 / 60);
+  check('二阶段：守在门口放弹幕（不靠近）', homeDist < 8 && e.enemyBullets.length > 0, 'homeDist=' + Math.round(homeDist) + ' bullets=' + e.enemyBullets.length);
+}
 check('二阶段：轮盘存在', !!e.dragonReel && e.dragonReel.items.length >= 4, e.dragonReel ? e.dragonReel.items.length : 0);
 check('二阶段：BGM 已开始', !!e.dragonBgm && e.dragonBgm.paused === false, e.dragonBgm ? e.dragonBgm.src : 'none');
 check('二阶段：自动武器被封锁', e.autoWeaponsEnabled() === false, String(e.autoWeaponsEnabled()));
@@ -258,6 +280,13 @@ for (let i = 0; i < 60 && boss.phase === 1; i++) e.hurtEnemy(boss, 30000);
 check('第二段打完：坐下 + 逆位对话', e.phase === 'bossintro' && e.bossIntro?.kind === 'dragon-phase-2' && boss.pose === 'sit',
   'kind=' + e.bossIntro?.kind + ' pose=' + boss.pose);
 for (let i = 0; i < 60 && e.phase === 'bossintro'; i++) e.advanceBossIntro();
+{
+  e.player.x = 60; e.player.y = 60;
+  const before3 = Math.hypot(e.player.x - boss.x, e.player.y - boss.y);
+  for (let i = 0; i < 60; i++) e.tick(1 / 60);
+  const after3 = Math.hypot(e.player.x - boss.x, e.player.y - boss.y);
+  check('第三段：贴上玩家放弹幕', after3 < before3 + 1, 'before=' + Math.round(before3) + ' after=' + Math.round(after3));
+}
 check('第三段：无敌剧情杀', boss.phase === 2 && boss.invuln === true && e.dragonScriptedDeath === true, 'phase=' + boss.phase);
 
 // 处决计时：先无敌顶住弹幕，6.5s 前不该死，之后被处决
