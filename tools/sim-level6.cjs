@@ -365,10 +365,8 @@ e.player.maxHp = 99999; e.player.hp = 99999; e.player.invuln = 999;
 for (let i = 0; i < 60; i++) e.tick(1 / 60);
 check('开局重演：文件怪包围（16 只）', e.enemies.length >= 12, 'enemies=' + e.enemies.length);
 check('开局重演：白饭落地', !!e.story?.bowl, 'bowl=' + JSON.stringify(e.story?.bowl));
-check('开局重演：吐槽对白去掉「饿死鬼」', e.phase === 'bossintro' && e.bossIntro?.kind === 'story-swarm-loop'
-  && e.bossIntro.lines.length === 1 && !JSON.stringify(e.bossIntro.lines).includes('饿死鬼'),
-  'kind=' + e.bossIntro?.kind + ' lines=' + JSON.stringify(e.bossIntro?.lines));
-for (let i = 0; i < 40 && e.phase === 'bossintro'; i++) e.advanceBossIntro();
+check('开局重演：带着记忆回来，不再有暴乱吐槽', e.phase === 'playing' && !e.bossIntro,
+  'phase=' + e.phase + ' intro=' + JSON.stringify(e.bossIntro?.kind ?? null));
 // 走过去按 F 抢饭
 if (e.story?.bowl) { e.player.x = e.story.bowl.x; e.player.y = e.story.bowl.y; }
 e.focused = true;
