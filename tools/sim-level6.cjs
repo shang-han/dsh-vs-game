@@ -30,7 +30,7 @@ function fakeCtx() {
 }
 function fakeEl(tag = 'div') {
   const el = {
-    tagName: String(tag).toUpperCase(), style: {}, dataset: {}, children: [], classList: { add: noop, remove: noop, toggle: noop, contains: () => false },
+    tagName: String(tag).toUpperCase(), style: {}, dataset: {}, children: [], isConnected: true, classList: { add: noop, remove: noop, toggle: noop, contains: () => false },
     innerHTML: '', textContent: '', width: 840, height: 520, tabIndex: 0,
     appendChild(c) { this.children.push(c); return c; },
     append(...cs) { this.children.push(...cs); },
@@ -138,10 +138,11 @@ if (!GameEngine) throw new Error('window.__vsGameDebug.GameEngine 不可用');
 const level = require('../lib/levels/truth-gate.js').default;
 
 const sent = [];
-function makeEngine() {
+function makeEngine(withLayer = false) {
   const canvas = fakeEl('canvas');
   canvas.parentElement = fakeEl('div');
-  canvas.parentElement.querySelector = () => null;   // 不初始化 SVG 覆盖层（Node 没有动态 import 回调）
+  // withLayer=true 时提供 .dsh-vs-dragon-layer，让 SVG 覆盖层的状态映射逻辑跑起来
+  canvas.parentElement.querySelector = () => (withLayer ? fakeEl('div') : null);
   return new GameEngine(canvas, { sendWs: (m) => sent.push(m), onHomeAction: noop });
 }
 
@@ -194,6 +195,7 @@ check('快照：Boss 三段/第二段/轮盘/锁定', snap2.boss && snap2.boss.d
   JSON.stringify({ phase: snap2.boss?.phase, count: snap2.boss?.phaseCount, reel: !!snap2.boss?.reel, lock: snap2.boss?.lock }));
 check('快照：HUD 锁定标记', snap2.activeSkill?.locked === true && snap2.weaponLocked === true,
   'skillLocked=' + snap2.activeSkill?.locked + ' weaponLocked=' + snap2.weaponLocked);
+check('快照：BGM 标记', snap2.boss?.bgm === true, String(snap2.boss?.bgm));
 check('二阶段：产生弹幕', e.enemyBullets.length > 0, 'bullets=' + e.enemyBullets.length);
 check('二阶段：刷出白饭', e.dragonRice.length > 0, 'rice=' + e.dragonRice.length);
 
@@ -263,6 +265,40 @@ if (bossChest) {
   check('通关宝箱：上报 BOSS_KILL', sent.some((m) => m && m.kind === 'boss-kill' && m.levelId === 'truth-gate'),
     JSON.stringify(sent.filter((m) => m && m.kind === 'boss-kill').slice(-1)));
 } else check('通关宝箱：存在', false);
+
+// ── SVG 覆盖层：状态映射 / 跟随位置 / 阶段表情 ────────────
+const e4 = makeEngine(true);
+e4.clearedLevels = new Set(['busy-server', 'furious-user', 'workspace-tidy', 'too-many-files', 'seaside']);
+e4.level = level;
+e4.world = { ...level.world };
+e4.reset();
+e4.phase = 'playing';
+e4.enterBossRoom();
+const warn = console.warn; console.warn = noop;   // 动态 import 在 Node 里必然失败，静音
+for (let i = 0; i < 50 && e4.phase === 'bossintro'; i++) e4.advanceBossIntro();
+const boss4 = e4.dragonBoss();
+check('覆盖层：已初始化 SVG', !!e4.dragonView && !!e4.dragonView.svg, e4.dragonView ? 'ok' : 'none');
+e4.updateDragonView(1000);
+const view4 = e4.dragonView;
+check('覆盖层：跟随 Boss 定位', /translate\(-?\d+px,-?\d+px\)/.test(view4.svg.style.transform || '') && view4.svg.style.width.endsWith('px'),
+  view4.svg.style.transform + ' / ' + view4.svg.style.width);
+check('覆盖层：第一段表情 neutral', view4.state.face === 'neutral' && view4.state.mode === 'idle', view4.state.face + '/' + view4.state.mode);
+e4.dragonBeginPhase(1);
+e4.updateDragonView(2000);
+check('覆盖层：第二段表情 determined + 手势', view4.state.face === 'determined' && !!view4.state.gesture, view4.state.face + '/' + JSON.stringify(view4.state.gesture));
+if (boss4) boss4.pose = 'sit';
+e4.updateDragonView(2100);
+check('覆盖层：坐下 sad', view4.state.mode === 'sit' && view4.state.face === 'sad' && view4.state.sit === 1, view4.state.mode + '/' + view4.state.face);
+if (boss4) boss4.pose = null;
+e4.dragonBeginPhase(2);
+e4.updateDragonView(3000);
+check('覆盖层：逆位 angry + 黑色滤镜', view4.state.face === 'angry' && String(view4.svg.style.filter).includes('drop-shadow'), view4.state.face);
+e4.enemies = [];
+e4.updateDragonView(3200);
+check('覆盖层：没有 Boss 时隐藏', view4.svg.style.display === 'none', view4.svg.style.display);
+console.warn = warn;
+try { e4.drawDragonTint(fakeCtx()); e4.drawDragonCut(fakeCtx()); } catch (err) { check('覆盖层：色调/过场绘制不抛错', false, String(err)); }
+check('覆盖层：色调/过场绘制不抛错', true);
 
 // ── 五宝箱门槛：没开完不能进 Boss 房 ─────────────────────
 const e3 = makeEngine();
