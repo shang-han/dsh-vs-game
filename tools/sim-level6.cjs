@@ -267,52 +267,43 @@ check('三阶段：5 秒时还活着（处决未到）', e.player.hp > 0 && e.ph
 for (let i = 0; i < 60 * 4; i++) e.tick(1 / 60);
 check('三阶段：6.5 秒后被处决', e.player.hp <= 0 || e.phase === 'dying' || e.phase === 'bossintro', 'hp=' + e.player.hp + ' phase=' + e.phase);
 for (let i = 0; i < 60 * 3; i++) e.tick(1 / 60);
-check('死亡后：回到开局虚无剧情（闭环）',
-  e.storyMode === true && !!e.story && !e.dragonBoss() && e.phase === 'bossintro' && e.bossIntro?.kind === 'story-mono',
+check('死亡后：回到开局场景 + 循环对白（闭环）',
+  e.storyMode === true && !!e.story && !e.dragonBoss() && e.phase === 'bossintro' && e.bossIntro?.kind === 'story-loop',
   'storyMode=' + e.storyMode + ' kind=' + e.bossIntro?.kind + ' boss=' + !!e.dragonBoss());
 check('死亡后：BGM 已停 / 阶段状态清空', !e.dragonBgm && !e.dragonLock && !e.dragonReel, 'bgm=' + !!e.dragonBgm + ' lock=' + JSON.stringify(e.dragonLock));
 check('死亡后：世界回到程序化虚无（不是关卡 6 地图）', !e.level && !!e.procmap, 'level=' + (e.level?.id ?? 'null') + ' procmap=' + !!e.procmap);
 
-// 推进开局独白 → 回到 walk（？？？ 在前面等）
+// 推进循环对白 → 龙娘起飞、留下白饭 → 收尾回家
 for (let i = 0; i < 40 && e.phase === 'bossintro'; i++) e.advanceBossIntro();
-check('死亡后：进入开局 walk 阶段（能去找 ？？？）', e.phase === 'playing' && e.story?.step === 'walk', 'phase=' + e.phase + ' step=' + e.story?.step);
+check('死亡后：龙娘起飞、留下白饭', e.phase === 'playing' && e.story?.step === 'loopsend', 'phase=' + e.phase + ' step=' + e.story?.step);
+for (let i = 0; i < 60 * 5; i++) e.tick(1 / 60);
+check('闭环结束：回到家里', e.phase === 'home' || e.inHomeScene() === true, 'phase=' + e.phase + ' homeScene=' + !!e.homeScene);
 
-// ── SVG 覆盖层：状态映射 / 跟随位置 / 阶段表情 ────────────
-const e4 = makeEngine(true);
-e4.clearedLevels = new Set(['busy-server', 'furious-user', 'workspace-tidy', 'too-many-files', 'seaside']);
-e4.level = level;
-e4.world = { ...level.world };
-e4.reset();
-e4.phase = 'playing';
-e4.bossSpawned = true;
-e4.enterBossRoom();
-const warn = console.warn; console.warn = noop;   // 动态 import 在 Node 里必然失败，静音
-for (let i = 0; i < 50 && e4.phase === 'bossintro'; i++) e4.advanceBossIntro();
-const boss4 = e4.dragonBoss();
-check('覆盖层：已初始化 SVG', !!e4.dragonView && !!e4.dragonView.svg, e4.dragonView ? 'ok' : 'none');
-e4.updateDragonView(1000);
-const view4 = e4.dragonView;
-check('覆盖层：跟随 Boss 定位', /translate\(-?\d+px,-?\d+px\)/.test(view4.svg.style.transform || '') && view4.svg.style.width.endsWith('px'),
-  view4.svg.style.transform + ' / ' + view4.svg.style.width);
-check('覆盖层：第一段表情 neutral', view4.state.face === 'neutral' && view4.state.mode === 'idle', view4.state.face + '/' + view4.state.mode);
-e4.dragonBeginPhase(1);
-e4.updateDragonView(2000);
-check('覆盖层：第二段表情 determined + 手势', view4.state.face === 'determined' && !!view4.state.gesture, view4.state.face + '/' + JSON.stringify(view4.state.gesture));
-if (boss4) boss4.pose = 'sit';
-e4.updateDragonView(2100);
-check('覆盖层：坐下 sad', view4.state.mode === 'sit' && view4.state.face === 'sad' && view4.state.sit === 1, view4.state.mode + '/' + view4.state.face);
-if (boss4) boss4.pose = null;
-e4.dragonBeginPhase(2);
-e4.updateDragonView(3000);
-check('覆盖层：逆位 angry + 黑色滤镜', view4.state.face === 'angry' && String(view4.svg.style.filter).includes('drop-shadow'), view4.state.face);
-e4.enemies = [];
-e4.updateDragonView(3200);
-check('覆盖层：没有 Boss 时隐藏', view4.svg.style.display === 'none', view4.svg.style.display);
-console.warn = warn;
-try { e4.drawDragonTint(fakeCtx()); e4.drawDragonCut(fakeCtx()); e.drawDragonAura(fakeCtx()); } catch (err) { check('覆盖层：色调/过场/占位龙影绘制不抛错', false, String(err)); }
-check('覆盖层：色调/过场/占位龙影绘制不抛错', true);
+// ── 龙娘帧素材：预渲染帧齐全 / 绘制不抛错 / Boss 头像存在 ──
+const FRAME_DIR = require('path').join(__dirname, '..', 'assets', 'dragon', 'frames');
+const frameSpec = { idle: 6, determined: 5, angry: 5, sit: 4, hurt: 3 };
+let frameOk = true, frameTotal = 0;
+for (const [state, n] of Object.entries(frameSpec)) {
+  for (let i = 0; i < n; i++) {
+    const f = require('path').join(FRAME_DIR, state + '-' + i + '.png');
+    if (!fs.existsSync(f) || fs.statSync(f).size < 1000) { frameOk = false; console.log('  missing frame', state + '-' + i); }
+    frameTotal++;
+  }
+}
+check('龙娘帧：' + frameTotal + ' 张预渲染帧齐全', frameOk, 'checked=' + frameTotal);
+try {
+  for (const phase of [0, 1, 2]) {
+    e.drawDragonFrames(fakeCtx(), { x: 450, y: 168, phase, pose: null, hitFlash: 0 });
+    e.drawDragonFrames(fakeCtx(), { x: 450, y: 168, phase, pose: 'sit', hitFlash: 0 });
+  }
+  e.drawDragonRice(fakeCtx());
+  check('龙娘帧：绘制不抛错', true);
+} catch (err) {
+  check('龙娘帧：绘制不抛错', false, String(err));
+}
+check('Boss 头像：assets/dragon/thumb.png 存在', fs.existsSync(require('path').join(__dirname, '..', 'assets', 'dragon', 'thumb.png')));
 
-// ── 五宝箱门槛：没开完不能进 Boss 房 ─────────────────────
+// ── 五宝箱门槛：没开完不能进 Boss 房 ─────────────────────// ── 五宝箱门槛：没开完不能进 Boss 房 ─────────────────────
 const e3 = makeEngine();
 e3.clearedLevels = new Set(['busy-server', 'furious-user', 'workspace-tidy', 'too-many-files', 'seaside']);
 e3.level = level;
