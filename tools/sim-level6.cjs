@@ -175,7 +175,7 @@ check('进入 Boss 房：对话中', e.phase === 'bossintro' && !!e.bossIntro, e
 for (let i = 0; i < 50 && e.phase === 'bossintro'; i++) e.advanceBossIntro();
 const boss = e.dragonBoss();
 check('Boss 已生成：正义', !!boss && boss.bossName === '正义', boss?.bossName ?? 'none');
-check('第一段 10 万血', boss && boss.phase === 0 && boss.maxHp === 100000, boss ? boss.maxHp : 'none');
+check('第一段 100 万血', boss && boss.phase === 0 && boss.maxHp === 1000000, boss ? boss.maxHp : 'none');
 
 // 进关对话：只有一句
 const e5 = makeEngine();
@@ -220,7 +220,7 @@ e.player.maxHp = 99999; e.player.hp = 99999;
   for (let i = 0; i < 20; i++) e.hurtEnemy(boss, 500);
   e.spawnDmgNum = origDmgNum;
   check('一阶段：移动时大概率闪避伤害', dodges > 0 && dodges < 20, 'dodges=' + dodges + '/20');
-  boss.hp = boss.phaseHp = 100000;
+  boss.hp = boss.phaseHp = 1000000;
   boss.dragonMoving = false;
   // 坐下/站起平滑过渡
   boss.pose = 'sit';
@@ -233,13 +233,13 @@ e.player.maxHp = 99999; e.player.hp = 99999;
 }
 
 // 一阶段：打空第一段
-for (let i = 0; i < 40 && boss.phase === 0; i++) e.hurtEnemy(boss, 20000);
+for (let i = 0; i < 40 && boss.phase === 0; i++) e.hurtEnemy(boss, 100000);
 check('第一段打完：过场对话', e.phase === 'bossintro' && e.bossIntro?.kind === 'dragon-phase-1', e.bossIntro?.kind ?? e.phase);
 check('进剧情前清掉受击高亮', (boss.hitFlash ?? 0) === 0, 'hitFlash=' + boss.hitFlash);
 e.activeSkillId = 'purge'; e.unlockedSkills = ['purge'];
 e.laserSkillOn = true; e.purge = { phase: 'hunt', t: 0 }; e.skillTimer = 3; e.teleportsLeft = 3;   // 模拟开打前挂着的技能
 for (let i = 0; i < 50 && e.phase === 'bossintro'; i++) e.advanceBossIntro();
-check('第二段开始：重置 10 万 + 封锁', boss.phase === 1 && boss.hp === 100000 && e.dragonLock?.weapon === true && e.dragonLock?.skill === true,
+check('第二段开始：重置 100 万 + 封锁', boss.phase === 1 && boss.hp === 1000000 && e.dragonLock?.weapon === true && e.dragonLock?.skill === true,
   'phase=' + boss.phase + ' hp=' + boss.hp);
 {
   e.player.x = 60; e.player.y = 60;
