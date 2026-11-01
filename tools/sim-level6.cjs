@@ -270,6 +270,9 @@ for (let i = 0; i < 60 * 3; i++) e.tick(1 / 60);
 check('死亡后：回到开局场景 + 循环对白（闭环）',
   e.storyMode === true && !!e.story && !e.dragonBoss() && e.phase === 'bossintro' && e.bossIntro?.kind === 'story-loop',
   'storyMode=' + e.storyMode + ' kind=' + e.bossIntro?.kind + ' boss=' + !!e.dragonBoss());
+check('死亡后：循环对白非空且没有「系统」说话',
+  (e.bossIntro?.lines?.length ?? 0) >= 4 && !(e.bossIntro?.lines ?? []).some((l) => l.speaker === '系统') && (e.bossIntro?.lines ?? []).some((l) => String(l.text).includes('新建文件夹')),
+  JSON.stringify((e.bossIntro?.lines ?? []).map((l) => l.speaker)));
 check('死亡后：BGM 已停 / 阶段状态清空', !e.dragonBgm && !e.dragonLock && !e.dragonReel, 'bgm=' + !!e.dragonBgm + ' lock=' + JSON.stringify(e.dragonLock));
 check('死亡后：世界回到程序化虚无（不是关卡 6 地图）', !e.level && !!e.procmap, 'level=' + (e.level?.id ?? 'null') + ' procmap=' + !!e.procmap);
 
