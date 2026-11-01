@@ -286,16 +286,30 @@ e.tick(1 / 60);
 e.keys.delete('f');
 check('开局重演：按 F 触发新对话', e.phase === 'bossintro' && e.bossIntro?.kind === 'story-looptalk', 'kind=' + e.bossIntro?.kind);
 for (let i = 0; i < 40 && e.phase === 'bossintro'; i++) e.advanceBossIntro();
-check('开局重演：龙娘起飞、留下白饭', e.phase === 'playing' && e.story?.step === 'loopsend', 'phase=' + e.phase + ' step=' + e.story?.step);
-// 等白饭落地，走过去按 F 捡
-for (let i = 0; i < 30; i++) e.tick(1 / 60);
+check('开局重演：进入 swarm（文件怪包围）', e.phase === 'playing' && e.story?.step === 'swarm', 'phase=' + e.phase + ' step=' + e.story?.step);
+// swarm 0.4s 后：刷 16 只文件怪 + 留白饭 + 龙娘起飞 + 吐槽对白
+e.player.maxHp = 99999; e.player.hp = 99999; e.player.invuln = 999;
+for (let i = 0; i < 60; i++) e.tick(1 / 60);
+check('开局重演：文件怪包围（16 只）', e.enemies.length >= 12, 'enemies=' + e.enemies.length);
+check('开局重演：白饭落地', !!e.story?.bowl, 'bowl=' + JSON.stringify(e.story?.bowl));
+check('开局重演：大肥鱼吐槽对白', e.phase === 'bossintro' && e.bossIntro?.kind === 'story-swarm', 'kind=' + e.bossIntro?.kind);
+for (let i = 0; i < 40 && e.phase === 'bossintro'; i++) e.advanceBossIntro();
+// 走过去按 F 抢饭
 if (e.story?.bowl) { e.player.x = e.story.bowl.x; e.player.y = e.story.bowl.y; }
 e.focused = true;
 e.keys.add('f');
 e.tick(1 / 60);
 e.keys.delete('f');
-check('开局重演：捡饭给代码鞭/升级', e.player.weapons.some((w) => w.type === 'whip') || e.player.weapons.length > 0,
-  JSON.stringify(e.player.weapons));
+check('开局重演：抢到白饭拿代码鞭', e.player.weapons.some((w) => w.type === 'whip') && e.story?.step === 'eating', 'step=' + e.story?.step + ' weapons=' + JSON.stringify(e.player.weapons));
+for (let i = 0; i < 60 * 3; i++) e.tick(1 / 60);
+check('开局重演：吃完进入战斗', e.story?.step === 'fight', 'step=' + e.story?.step);
+// 等逆位时刻：把表拨到逆位（开局也是等 30/30/30 循环）
+e.cycleStartAt = e.elapsed - 61;
+e.tick(1 / 60);
+check('开局重演：逆位时刻开门（乱流）', !!e.story?.rift, 'rift=' + !!e.story?.rift);
+if (e.story?.rift) { e.player.x = e.story.rift.x; e.player.y = e.story.rift.y; }
+e.tick(1 / 60);
+check('开局重演：走进乱流 → ending', e.story?.step === 'ending', 'step=' + e.story?.step);
 for (let i = 0; i < 60 * 3; i++) e.tick(1 / 60);
 check('闭环结束：回到家里（不播小狼）', (e.phase === 'home' || e.inHomeScene() === true) && !e.homeScene, 'phase=' + e.phase + ' homeScene=' + !!e.homeScene);
 
