@@ -264,6 +264,25 @@ if (bossChest) {
     JSON.stringify(sent.filter((m) => m && m.kind === 'boss-kill').slice(-1)));
 } else check('通关宝箱：存在', false);
 
+// ── 五宝箱门槛：没开完不能进 Boss 房 ─────────────────────
+const e3 = makeEngine();
+e3.clearedLevels = new Set(['busy-server', 'furious-user', 'workspace-tidy', 'too-many-files', 'seaside']);
+e3.level = level;
+e3.world = { ...level.world };
+e3.reset();
+e3.seedLevel();
+e3.phase = 'playing';
+e3.player.x = level.bossZone.xf * e3.world.w;
+e3.player.y = level.bossZone.yf * e3.world.h;
+e3.checkBossZone();
+check('门槛：宝箱没开完不进 Boss 房', e3.bossRoomMode === false && e3.bossSpawned === false, 'room=' + e3.bossRoomMode);
+for (const c of e3.chests) { e3.openChest(c); e3.choices = null; e3.phase = 'playing'; }
+e3.player.x = level.bossZone.xf * e3.world.w;
+e3.player.y = level.bossZone.yf * e3.world.h;
+e3.checkBossZone();
+check('门槛：开完 5 个宝箱后进 Boss 房', e3.bossRoomMode === true && e3.bossSpawned === true, 'room=' + e3.bossRoomMode);
+check('门槛：开场白是正义的 5 句', e3.bossIntro?.lines?.length === 5 && e3.bossIntro.lines[0].speaker === '正义', 'lines=' + (e3.bossIntro?.lines?.length ?? 0));
+
 // ── 长廊入口：第 2 关门口下方的紫色地毯 ─────────────────────
 const LEVELS = require('../lib/levels/index.js').LEVELS;
 const e2 = makeEngine();
