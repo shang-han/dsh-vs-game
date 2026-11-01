@@ -294,6 +294,8 @@ e.focused = true;
 e.keys.add('f');
 e.tick(1 / 60);
 e.keys.delete('f');
+check('开局重演：捡饭给代码鞭/升级', e.player.weapons.some((w) => w.type === 'whip') || e.player.weapons.length > 0,
+  JSON.stringify(e.player.weapons));
 for (let i = 0; i < 60 * 3; i++) e.tick(1 / 60);
 check('闭环结束：回到家里（不播小狼）', (e.phase === 'home' || e.inHomeScene() === true) && !e.homeScene, 'phase=' + e.phase + ' homeScene=' + !!e.homeScene);
 
