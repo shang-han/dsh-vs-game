@@ -158,6 +158,8 @@ e.world = { ...level.world };
 e.reset();
 e.seedLevel();
 e.phase = 'playing';
+e.activeSkillId = 'purge';
+e.unlockedSkills = ['purge'];
 check('关卡载入：5 个宝箱', e.chests.length === 5, 'chests=' + e.chests.length);
 
 // 开完 5 个箱子（直接标记）
@@ -190,6 +192,8 @@ for (let i = 0; i < 360; i++) e.tick(1 / 60);
 const snap2 = e.snapshot();
 check('快照：Boss 三段/第二段/轮盘/锁定', snap2.boss && snap2.boss.dragon === true && snap2.boss.phaseCount === 3 && snap2.boss.phase === 2 && !!snap2.boss.reel && snap2.boss.lock?.weapon === true,
   JSON.stringify({ phase: snap2.boss?.phase, count: snap2.boss?.phaseCount, reel: !!snap2.boss?.reel, lock: snap2.boss?.lock }));
+check('快照：HUD 锁定标记', snap2.activeSkill?.locked === true && snap2.weaponLocked === true,
+  'skillLocked=' + snap2.activeSkill?.locked + ' weaponLocked=' + snap2.weaponLocked);
 check('二阶段：产生弹幕', e.enemyBullets.length > 0, 'bullets=' + e.enemyBullets.length);
 check('二阶段：刷出白饭', e.dragonRice.length > 0, 'rice=' + e.dragonRice.length);
 
@@ -205,6 +209,8 @@ if (!e.dragonRice.length) e.dragonSpawnRice();
   check('白饭：轮盘停下并解锁武器', e.dragonReel && e.dragonReel.spinning === false && e.dragonLock.weapon === false,
     'spinning=' + e.dragonReel?.spinning + ' lock=' + JSON.stringify(e.dragonLock) + ' result=' + JSON.stringify(e.dragonReel?.result));
   check('解锁后：自动武器恢复', e.autoWeaponsEnabled() === true, String(e.autoWeaponsEnabled()));
+  const snap3 = e.snapshot();
+  check('解锁后：HUD 解除武器锁', snap3.weaponLocked === false, 'weaponLocked=' + snap3.weaponLocked);
   e.player.x = 60; e.player.y = 60;   // 挪开，别自动吃掉后面的白饭
 }
 
