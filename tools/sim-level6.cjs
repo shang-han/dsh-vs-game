@@ -203,6 +203,35 @@ check('一阶段：会冲撞玩家（有预警/落点）', !!e.dragonImpactFx ||
 check('一阶段：冲撞落点造成伤害', e.player.hp < 5000, 'hp=' + e.player.hp);
 e.player.maxHp = 99999; e.player.hp = 99999;
 
+// 一阶段：灵活游走 / 残影 / 闪避 / 坐下-站起过渡
+{
+  boss.dragonDashCd = 99; boss.dragonLeap = null;
+  const x0 = boss.x, y0 = boss.y;
+  for (let i = 0; i < 40; i++) e.tick(1 / 60);
+  const moved = Math.hypot(boss.x - x0, boss.y - y0);
+  check('一阶段：不停游走（不是站桩）', moved > 25, 'moved=' + Math.round(moved));
+  check('一阶段：移动有残影', (e.dragonGhosts?.length ?? 0) > 0, 'ghosts=' + (e.dragonGhosts?.length ?? 0));
+  // 闪避：20 次攻击里应该出现若干次「闪避」
+  let dodges = 0;
+  const origDmgNum = e.spawnDmgNum.bind(e);
+  e.spawnDmgNum = (...args) => { if (args[2] === '闪避') dodges++; return origDmgNum(...args); };
+  boss.dragonMoving = true;
+  boss.hp = boss.phaseHp = 1e9;
+  for (let i = 0; i < 20; i++) e.hurtEnemy(boss, 500);
+  e.spawnDmgNum = origDmgNum;
+  check('一阶段：移动时大概率闪避伤害', dodges > 0 && dodges < 20, 'dodges=' + dodges + '/20');
+  boss.hp = boss.phaseHp = 100000;
+  boss.dragonMoving = false;
+  // 坐下/站起平滑过渡
+  boss.pose = 'sit';
+  for (let i = 0; i < 20; i++) e.tick(1 / 60);
+  const sitK1 = boss.sitK ?? 0;
+  boss.pose = null;
+  for (let i = 0; i < 20; i++) e.tick(1 / 60);
+  const sitK2 = boss.sitK ?? 0;
+  check('坐下/站起：有过渡动画', sitK1 > 0.8 && sitK2 < 0.2, 'sitK=' + sitK1.toFixed(2) + '→' + sitK2.toFixed(2));
+}
+
 // 一阶段：打空第一段
 for (let i = 0; i < 40 && boss.phase === 0; i++) e.hurtEnemy(boss, 20000);
 check('第一段打完：过场对话', e.phase === 'bossintro' && e.bossIntro?.kind === 'dragon-phase-1', e.bossIntro?.kind ?? e.phase);
