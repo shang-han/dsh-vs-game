@@ -258,6 +258,25 @@ if (bossChest) {
     JSON.stringify(sent.filter((m) => m && m.kind === 'boss-kill').slice(-1)));
 } else check('通关宝箱：存在', false);
 
+// ── 长廊入口：第 2 关门口下方的紫色地毯 ─────────────────────
+const LEVELS = require('../lib/levels/index.js').LEVELS;
+const e2 = makeEngine();
+e2.clearedLevels = new Set(['busy-server', 'furious-user', 'workspace-tidy', 'too-many-files']);   // 还没打第 5 关
+e2.enterCorridor(LEVELS);
+const gateDoor = e2.corridor.doors.find((d) => d.levelId === 'truth-gate');
+check('长廊：紫色地毯入口存在', !!gateDoor && gateDoor.side === 'lower' && gateDoor.purple === true, gateDoor ? gateDoor.side + '/purple=' + gateDoor.purple : 'none');
+const D = { firstDoorX: 520, doorGap: 330 };
+check('长廊：地毯在第 2 关门口下方', gateDoor && Math.abs(gateDoor.x - (D.firstDoorX + D.doorGap)) < 1, gateDoor ? gateDoor.x : 'none');
+check('长廊：未通第 5 关时锁住', gateDoor && gateDoor.locked === true, String(gateDoor?.locked));
+e2.corridor.near = gateDoor;
+e2.corridorInteract();
+check('长廊：锁住时提示 3600 万 token', !!e2.banner && String(e2.banner.text).includes('3600 万'), e2.banner?.text ?? 'none');
+e2.clearedLevels.add('seaside');
+e2.enterCorridor(LEVELS);
+const gateDoor2 = e2.corridor.doors.find((d) => d.levelId === 'truth-gate');
+check('长廊：通关第 5 关后解锁', gateDoor2 && gateDoor2.locked === false, String(gateDoor2?.locked));
+check('长廊：第 6 关不再出现在上门', !e2.corridor.doors.some((d) => d.kind === 'level' && d.side === 'upper' && d.levelId === 'truth-gate'));
+
 const failed = results.filter((r) => !r.ok);
 console.log('\n' + (results.length - failed.length) + '/' + results.length + ' checks passed');
 if (failed.length) { console.log('FAILED: ' + failed.map((f) => f.name).join(' / ')); process.exit(1); }
