@@ -493,6 +493,15 @@ check('长廊：第 6 关不再出现在上门', !e2.corridor.doors.some((d) => 
     const items = [sp2.item, bUp.item, bRt.item, bDn.item].filter(Boolean);
     check('实验室：分流器分出的物品落在带上且不消失', items.length === 1 && items[0] === 'ore-iron', 'items=' + JSON.stringify(items));
   }
+  // 投料乐观更新：燃料机里的木材立刻进本地缓冲，不等回包
+  const burner = { id: 'bn', kind: 'burner', x: 0, y: 0, slots: [], in: [], out: [], fuel: 0, sides: [1, 2, 1, 1] };
+  eL.lab = { stage: 1, grid: [burner], power: { stored: 0, cap: 100, brownout: false }, store: {}, mineLv: 1 };
+  eL.inventory = ['mat-wood', 'mat-wood'];
+  eL.labInsert('bn', 'mat-wood');
+  check('实验室：投料立刻进机器本地缓冲（不会重新进入才消失）',
+    (burner.in ?? []).some((b) => b.item === 'mat-wood' && b.n === 1) && eL.inventory.length === 1,
+    'in=' + JSON.stringify(burner.in) + ' inv=' + eL.inventory.length);
+
   eL.lab = { stage: 1, grid: [], power: { stored: 0, cap: 100, brownout: true }, store: {}, mineLv: 3 };
   check('实验室：矿场/采矿机等级统一读 lab.mineLv', eL.labMineLevel() === 3, 'lv=' + eL.labMineLevel());
   eL.homeDevices = [{ kind: 'basic-mine', built: true, mineLevel: 3 }];
