@@ -217,9 +217,9 @@ e.player.maxHp = 99999; e.player.hp = 99999;
   e.spawnDmgNum = (...args) => { if (args[2] === '闪避') dodges++; return origDmgNum(...args); };
   boss.dragonMoving = true;
   boss.hp = boss.phaseHp = 1e9;
-  for (let i = 0; i < 20; i++) e.hurtEnemy(boss, 500);
+  for (let i = 0; i < 40; i++) e.hurtEnemy(boss, 500);
   e.spawnDmgNum = origDmgNum;
-  check('一阶段：移动时大概率闪避伤害', dodges > 0 && dodges < 20, 'dodges=' + dodges + '/20');
+  check('一阶段：移动时大概率闪避伤害', dodges > 0 && dodges < 40, 'dodges=' + dodges + '/40');
   boss.hp = boss.phaseHp = 1000000;
   boss.dragonMoving = false;
   // 坐下/站起平滑过渡
