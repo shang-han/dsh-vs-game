@@ -211,6 +211,13 @@ if (!e.dragonRice.length) e.dragonSpawnRice();
   e.tick(1 / 60);
   check('白饭：吃到后轮盘开始减速', !!e.dragonReel && e.dragonReel.spinT > 0, 'spinT=' + e.dragonReel?.spinT);
   for (let i = 0; i < 120 && e.dragonReel?.spinning; i++) e.tick(1 / 60);
+  // 暂停/继续：BGM 跟着停
+  const bgmBefore = !!(e.dragonBgm && !e.dragonBgm.paused);
+  e.pause();
+  const pausedOk = !!e.dragonBgm && e.dragonBgm.paused === true;
+  e.resume();
+  const resumedOk = !!e.dragonBgm && e.dragonBgm.paused === false;
+  check('二阶段：暂停/继续同步 BGM', bgmBefore && pausedOk && resumedOk, 'before=' + bgmBefore + ' paused=' + pausedOk + ' resumed=' + resumedOk);
   check('白饭：轮盘停下并解锁武器', e.dragonReel && e.dragonReel.spinning === false && e.dragonLock.weapon === false,
     'spinning=' + e.dragonReel?.spinning + ' lock=' + JSON.stringify(e.dragonLock) + ' result=' + JSON.stringify(e.dragonReel?.result));
   check('解锁后：自动武器恢复', e.autoWeaponsEnabled() === true, String(e.autoWeaponsEnabled()));
@@ -233,6 +240,18 @@ if (e.dragonRice.length) {
 } else {
   check('第二碗白饭：能刷出第二碗', false, 'rice=' + e.dragonRice.length);
 }
+
+// 第三碗白饭：两样都解锁后回血，不再转轮盘
+e.player.hp = Math.round(e.player.maxHp * 0.5);
+e.dragonSpawnRice();
+if (e.dragonRice.length) {
+  const r3 = e.dragonRice[e.dragonRice.length - 1];
+  e.player.x = r3.x; e.player.y = r3.y;
+  e.tick(1 / 60);
+  check('第三碗白饭：回血且不转轮盘', e.player.hp > e.player.maxHp * 0.6 && e.dragonReel?.spinning !== true,
+    'hp=' + Math.round(e.player.hp) + '/' + e.player.maxHp + ' spinning=' + e.dragonReel?.spinning);
+  e.player.x = 60; e.player.y = 60;
+} else check('第三碗白饭：能刷出', false);
 
 // 二阶段打空
 for (let i = 0; i < 60 && boss.phase === 1; i++) e.hurtEnemy(boss, 30000);
