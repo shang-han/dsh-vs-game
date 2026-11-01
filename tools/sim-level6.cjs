@@ -235,6 +235,7 @@ e.player.maxHp = 99999; e.player.hp = 99999;
 // 一阶段：打空第一段
 for (let i = 0; i < 40 && boss.phase === 0; i++) e.hurtEnemy(boss, 20000);
 check('第一段打完：过场对话', e.phase === 'bossintro' && e.bossIntro?.kind === 'dragon-phase-1', e.bossIntro?.kind ?? e.phase);
+check('进剧情前清掉受击高亮', (boss.hitFlash ?? 0) === 0, 'hitFlash=' + boss.hitFlash);
 e.activeSkillId = 'purge'; e.unlockedSkills = ['purge'];
 e.laserSkillOn = true; e.purge = { phase: 'hunt', t: 0 }; e.skillTimer = 3; e.teleportsLeft = 3;   // 模拟开打前挂着的技能
 for (let i = 0; i < 50 && e.phase === 'bossintro'; i++) e.advanceBossIntro();
