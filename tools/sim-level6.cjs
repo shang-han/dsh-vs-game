@@ -324,6 +324,8 @@ if (e.dragonRice.length) {
 for (let i = 0; i < 60 && boss.phase === 1; i++) e.hurtEnemy(boss, 30000);
 check('第二段打完：坐下 + 逆位对话', e.phase === 'bossintro' && e.bossIntro?.kind === 'dragon-phase-2' && boss.pose === 'sit',
   'kind=' + e.bossIntro?.kind + ' pose=' + boss.pose);
+for (let i = 0; i < 30; i++) e.tick(1 / 60);
+check('逆位对话：黑紫粒子提前出现', (e.dragonAuraParticles?.length ?? 0) > 0, 'particles=' + (e.dragonAuraParticles?.length ?? 0));
 for (let i = 0; i < 60 && e.phase === 'bossintro'; i++) e.advanceBossIntro();
 {
   e.player.x = 60; e.player.y = 60;
